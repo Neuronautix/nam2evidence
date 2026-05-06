@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ECTDMappingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
@@ -22,7 +23,9 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity(repositoryClass: ECTDMappingRepository::class)]
 #[ORM\Table(name: 'ectd_mappings')]
 #[ApiResource(
-    operations: [new GetCollection(), new Post(), new Get(), new Put()]
+    operations: [new GetCollection(), new Post(), new Get(), new Put()],
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
 )]
 class ECTDMapping
 {
@@ -30,33 +33,42 @@ class ECTDMapping
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[Groups(['read'])]
     private Ulid $id;
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Groups(['read', 'write'])]
     private string $mappingId = '';
 
     #[ORM\ManyToOne(targetEntity: NAMStudy::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?NAMStudy $study = null;
 
     #[ORM\ManyToOne(targetEntity: ClaimNode::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?ClaimNode $claim = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $evidenceType = '';
 
     /** eCTD section code, e.g. "4.2.3.7.3" */
     #[ORM\Column(length: 30)]
+    #[Groups(['read', 'write'])]
     private string $ectdSection = '';
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $ectdTitle = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $notes = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $justification = null;
 
     public function __construct()

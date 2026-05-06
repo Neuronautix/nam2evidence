@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ClaimNodeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,7 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ClaimNodeRepository::class)]
 #[ORM\Table(name: 'claim_nodes')]
 #[ApiResource(
-    operations: [new GetCollection(), new Post(), new Get(), new Put()]
+    operations: [new GetCollection(), new Post(), new Get(), new Put()],
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
 )]
 class ClaimNode
 {
@@ -34,56 +37,69 @@ class ClaimNode
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[Groups(['read'])]
     private Ulid $id;
 
     #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $claimId = '';
 
     #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private Project $project;
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $claimText = '';
 
     /** mechanistic | empirical | comparative | predictive */
     #[ORM\Column(length: 30)]
+    #[Groups(['read', 'write'])]
     private string $claimType = 'empirical';
 
     #[ORM\ManyToOne(targetEntity: ContextOfUseCard::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private ContextOfUseCard $contextOfUse;
 
     /** exploratory | supportive | decision_informing | potentially_pivotal */
     #[ORM\Column(length: 30)]
     #[Assert\Choice(choices: ['exploratory', 'supportive', 'decision_informing', 'potentially_pivotal'])]
+    #[Groups(['read', 'write'])]
     private string $confidence = 'exploratory';
 
     /** JSONB array of evidence_id references that support this claim */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $supportingEvidence = [];
 
     /** JSONB array of evidence_id references that contradict this claim */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $contradictoryEvidence = [];
 
     /** JSONB array of limitation strings */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $limitations = [];
 
     /** JSONB array of eCTD section codes, e.g. ["4.2.3.7.3", "2.6.2"] */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $ectdTargetSections = [];
 
     /** pending | human_review_required | approved | rejected */
     #[ORM\Column(length: 30)]
     #[Assert\Choice(choices: ['pending', 'human_review_required', 'approved', 'rejected'])]
+    #[Groups(['read', 'write'])]
     private string $reviewStatus = 'human_review_required';
 
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?ClaimNode $parentClaim = null;
 
     public function __construct()

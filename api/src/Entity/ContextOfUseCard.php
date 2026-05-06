@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ContextOfUseCardRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,7 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'context_of_use_cards')]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
-    operations: [new GetCollection(), new Post(), new Get(), new Put()]
+    operations: [new GetCollection(), new Post(), new Get(), new Put()],
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
 )]
 class ContextOfUseCard
 {
@@ -31,65 +34,82 @@ class ContextOfUseCard
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[Groups(['read'])]
     private Ulid $id;
 
     /** Human-readable COU identifier, e.g. COU-HEP-001 */
     #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $couId = '';
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'contextOfUseCards')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private Project $project;
 
     /** NAMO model-system class: Organoid | OrganOnChip | QSARModel | CellBasedAssay | … */
     #[ORM\Column(length: 60)]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $namType = '';
 
     /** The specific regulatory / scientific question the NAM is deployed to answer */
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $regulatoryQuestion = '';
 
     /** IND-enabling | pre_IND | phase_I | … */
     #[ORM\Column(length: 60)]
+    #[Groups(['read', 'write'])]
     private string $drugDevelopmentStage = '';
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['read', 'write'])]
     private string $intendedUse = '';
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['read', 'write'])]
     private string $decisionSupported = '';
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $biologicalDomain = '';
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $endpointClass = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $populationRelevance = null;
 
     /** JSONB array of known model limitations */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $limitations = [];
 
     /** JSONB array of pre-specified acceptance criteria */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $acceptanceCriteria = [];
 
     /** exploratory | supportive | decision_informing | potentially_pivotal */
     #[ORM\Column(length: 30)]
+    #[Groups(['read', 'write'])]
     private string $regulatoryConfidenceLevel = 'exploratory';
 
     #[ORM\Column(length: 20)]
+    #[Groups(['read', 'write'])]
     private string $version = '1.0';
 
     #[ORM\Column]
+    #[Groups(['read'])]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
+    #[Groups(['read'])]
     private \DateTimeImmutable $updatedAt;
 
     public function __construct()

@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\EvidenceItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,7 +25,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: EvidenceItemRepository::class)]
 #[ORM\Table(name: 'evidence_items')]
 #[ApiResource(
-    operations: [new GetCollection(), new Post(), new Get(), new Put()]
+    operations: [new GetCollection(), new Post(), new Get(), new Put()],
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
 )]
 class EvidenceItem
 {
@@ -32,14 +35,17 @@ class EvidenceItem
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[Groups(['read'])]
     private Ulid $id;
 
     #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $evidenceId = '';
 
     #[ORM\ManyToOne(targetEntity: NAMStudy::class, inversedBy: 'evidenceItems')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private NAMStudy $study;
 
     /** One of the eight validation domains */
@@ -54,25 +60,31 @@ class EvidenceItem
         'limitation_analysis',
         'regulatory_alignment',
     ])]
+    #[Groups(['read', 'write'])]
     private string $domain = '';
 
     /** The specific evaluation question for this evidence item */
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $question = '';
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private string $evidenceType = '';
 
     /** met | partial | not_met | not_applicable */
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['met', 'partial', 'not_met', 'not_applicable'])]
+    #[Groups(['read', 'write'])]
     private string $status = 'not_applicable';
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $notes = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
     private ?string $supportingData = null;
 
     public function __construct()
