@@ -1,0 +1,119 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Repository\ClaimNodeRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * A structured weight-of-evidence claim node.
+ * Confidence levels follow the four-tier NAMO regulatory support vocabulary:
+ *   exploratory | supportive | decision_informing | potentially_pivotal
+ *
+ * Every claim starts as human_review_required; export is blocked until all
+ * claims in a project are approved.
+ */
+#[ORM\Entity(repositoryClass: ClaimNodeRepository::class)]
+#[ORM\Table(name: 'claim_nodes')]
+#[ApiResource(
+    operations: [new GetCollection(), new Post(), new Get(), new Put()]
+)]
+class ClaimNode
+{
+    #[ORM\Id]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    private Ulid $id;
+
+    #[ORM\Column(length: 100, unique: true)]
+    #[Assert\NotBlank]
+    private string $claimId = '';
+
+    #[ORM\ManyToOne(targetEntity: Project::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Project $project;
+
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank]
+    private string $claimText = '';
+
+    /** mechanistic | empirical | comparative | predictive */
+    #[ORM\Column(length: 30)]
+    private string $claimType = 'empirical';
+
+    #[ORM\ManyToOne(targetEntity: ContextOfUseCard::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ContextOfUseCard $contextOfUse;
+
+    /** exploratory | supportive | decision_informing | potentially_pivotal */
+    #[ORM\Column(length: 30)]
+    #[Assert\Choice(choices: ['exploratory', 'supportive', 'decision_informing', 'potentially_pivotal'])]
+    private string $confidence = 'exploratory';
+
+    /** JSONB array of evidence_id references that support this claim */
+    #[ORM\Column(type: 'json')]
+    private array $supportingEvidence = [];
+
+    /** JSONB array of evidence_id references that contradict this claim */
+    #[ORM\Column(type: 'json')]
+    private array $contradictoryEvidence = [];
+
+    /** JSONB array of limitation strings */
+    #[ORM\Column(type: 'json')]
+    private array $limitations = [];
+
+    /** JSONB array of eCTD section codes, e.g. ["4.2.3.7.3", "2.6.2"] */
+    #[ORM\Column(type: 'json')]
+    private array $ectdTargetSections = [];
+
+    /** pending | human_review_required | approved | rejected */
+    #[ORM\Column(length: 30)]
+    #[Assert\Choice(choices: ['pending', 'human_review_required', 'approved', 'rejected'])]
+    private string $reviewStatus = 'human_review_required';
+
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ClaimNode $parentClaim = null;
+
+    public function __construct()
+    {
+        $this->id = new Ulid();
+    }
+
+    public function getId(): Ulid { return $this->id; }
+    public function getClaimId(): string { return $this->claimId; }
+    public function setClaimId(string $v): static { $this->claimId = $v; return $this; }
+    public function getProject(): Project { return $this->project; }
+    public function setProject(Project $v): static { $this->project = $v; return $this; }
+    public function getClaimText(): string { return $this->claimText; }
+    public function setClaimText(string $v): static { $this->claimText = $v; return $this; }
+    public function getClaimType(): string { return $this->claimType; }
+    public function setClaimType(string $v): static { $this->claimType = $v; return $this; }
+    public function getContextOfUse(): ContextOfUseCard { return $this->contextOfUse; }
+    public function setContextOfUse(ContextOfUseCard $v): static { $this->contextOfUse = $v; return $this; }
+    public function getConfidence(): string { return $this->confidence; }
+    public function setConfidence(string $v): static { $this->confidence = $v; return $this; }
+    public function getSupportingEvidence(): array { return $this->supportingEvidence; }
+    public function setSupportingEvidence(array $v): static { $this->supportingEvidence = $v; return $this; }
+    public function getContradictoryEvidence(): array { return $this->contradictoryEvidence; }
+    public function setContradictoryEvidence(array $v): static { $this->contradictoryEvidence = $v; return $this; }
+    public function getLimitations(): array { return $this->limitations; }
+    public function setLimitations(array $v): static { $this->limitations = $v; return $this; }
+    public function getEctdTargetSections(): array { return $this->ectdTargetSections; }
+    public function setEctdTargetSections(array $v): static { $this->ectdTargetSections = $v; return $this; }
+    public function getReviewStatus(): string { return $this->reviewStatus; }
+    public function setReviewStatus(string $v): static { $this->reviewStatus = $v; return $this; }
+    public function getParentClaim(): ?ClaimNode { return $this->parentClaim; }
+    public function setParentClaim(?ClaimNode $v): static { $this->parentClaim = $v; return $this; }
+}
