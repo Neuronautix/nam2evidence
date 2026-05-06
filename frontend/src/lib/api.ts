@@ -12,6 +12,20 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
 export const DATA_MODE = (process.env.NEXT_PUBLIC_DATA_MODE ?? 'api').toLowerCase();
 
+export type ExportFormat = 'json' | 'csv' | 'md' | 'txt';
+
+export class ApiDownloadError extends Error {
+  readonly status: number;
+  readonly pendingIds: string[];
+
+  constructor(message: string, status: number, pendingIds: string[] = []) {
+    super(message);
+    this.name = 'ApiDownloadError';
+    this.status = status;
+    this.pendingIds = pendingIds;
+  }
+}
+
 type ApiProject = {
   id: string;
   name: string;
@@ -49,6 +63,60 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   return (await response.json()) as T;
+}
+
+function parseFilename(contentDisposition: string | null): string | null {
+  if (!contentDisposition) return null;
+
+  const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+  if (utf8Match?.[1]) {
+    return decodeURIComponent(utf8Match[1]);
+  }
+
+  const asciiMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
+  return asciiMatch?.[1] ?? null;
+}
+
+async function requestDownload(path: string, init?: RequestInit): Promise<{ blob: Blob; filename: string }> {
+  const headers = new Headers(init?.headers ?? {});
+  headers.set('Accept', '*/*');
+
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...init,
+    headers,
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    let message = `API ${response.status}`;
+    let pendingIds: string[] = [];
+
+    try {
+      const data = (await response.json()) as { error?: string; pending_ids?: string[] };
+      message = data.error ?? message;
+      pendingIds = Array.isArray(data.pending_ids) ? data.pending_ids : [];
+    } catch {
+      const text = await response.text();
+      if (text) message = text;
+    }
+
+    throw new ApiDownloadError(message, response.status, pendingIds);
+  }
+
+  const filename = parseFilename(response.headers.get('Content-Disposition')) ?? 'export.bin';
+  return {
+    blob: await response.blob(),
+    filename,
+  };
+}
+
+export function saveBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function toProject(p: ApiProject): Project {
@@ -220,4 +288,13 @@ export async function updateClaimStatusApi(
   });
 
   return toClaim(data);
+}
+
+export async function generateAndDownloadExport(
+  projectId: string,
+  format: ExportFormat
+): Promise<{ blob: Blob; filename: string }> {
+  return requestDownload(`/api/projects/${projectId}/export/download?format=${format}`, {
+    method: 'POST',
+  });
 }

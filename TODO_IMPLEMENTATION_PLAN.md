@@ -293,12 +293,12 @@ Acceptance criteria:
 - [x] Implement project-scoped eCTD filtering in backend export controller.
 - [x] Add serializer groups and verify API payload shapes.
 - [x] Build frontend API client and wire Project + COU pages first.
-- [ ] Add integration test covering export-blocked-when-pending-claims.
+- [x] Add integration test covering export-blocked-when-pending-claims.
 
 ### P2 tasks
 - [x] Wire Study and Validation pages to API.
 - [x] Wire Claim Graph status changes to API.
-- [ ] Replace client-built exports with backend export endpoints.
+- [x] Replace client-built exports with backend export endpoints.
 
 ## 7) Deferred (post-MVP)
 

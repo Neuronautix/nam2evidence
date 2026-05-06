@@ -44,6 +44,7 @@ When Symfony console tooling is available in the runtime image, export and diff 
 ## Current custom endpoints to keep stable
 
 - POST /api/projects/{id}/export
+- POST /api/projects/{id}/export/download
 - GET /api/projects/{id}/export/history
 - GET /api/v1/projects
 - POST /api/v1/projects
