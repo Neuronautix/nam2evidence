@@ -12,6 +12,7 @@ import {
   Download,
   ChevronLeft,
   Home,
+  Upload,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -24,6 +25,7 @@ const navItems = [
   { href: '', label: 'Overview', icon: Home },
   { href: '/cou', label: 'Context of Use', icon: FileText },
   { href: '/study', label: 'NAM Study', icon: Microscope },
+  { href: '/import', label: 'Import NAMO', icon: Upload },
   { href: '/validation', label: 'Validation Matrix', icon: CheckSquare },
   { href: '/claims', label: 'Claim Graph', icon: GitBranch },
   { href: '/ectd', label: 'eCTD Mapping', icon: FolderTree },

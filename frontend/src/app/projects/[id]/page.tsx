@@ -5,7 +5,7 @@ import { useStore } from '@/lib/store';
 import Link from 'next/link';
 import ConfidenceBadge from '@/components/ConfidenceBadge';
 import StatusBadge from '@/components/StatusBadge';
-import { FileText, Microscope, CheckSquare, GitBranch, FolderTree, Download, ChevronRight } from 'lucide-react';
+import { FileText, Microscope, CheckSquare, GitBranch, FolderTree, Download, ChevronRight, Upload } from 'lucide-react';
 
 export default function ProjectOverviewPage() {
   const { id } = useParams<{ id: string }>();
@@ -50,6 +50,15 @@ export default function ProjectOverviewPage() {
       meta: study ? <span className="badge bg-teal-100 text-teal-700 text-xs">{study.model_system.namo_class}</span> : null,
       color: 'bg-teal-50 border-teal-200',
       iconColor: 'text-teal-600',
+    },
+    {
+      href: `/projects/${id}/import`,
+      icon: Upload,
+      label: 'Import NAMO',
+      desc: 'Paste or upload YAML/JSON',
+      meta: null,
+      color: 'bg-indigo-50 border-indigo-200',
+      iconColor: 'text-indigo-600',
     },
     {
       href: `/projects/${id}/validation`,

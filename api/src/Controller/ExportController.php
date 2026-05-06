@@ -10,6 +10,7 @@ use App\Entity\EvidenceItem;
 use App\Entity\ExportPackage;
 use App\Entity\NAMStudy;
 use App\Entity\Project;
+use App\Service\Export\ExportGate;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,21 +43,18 @@ class ExportController extends AbstractController
             return $this->json(['error' => 'Project not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Human-review gate
-        $pendingClaims = $this->em->getRepository(ClaimNode::class)
-            ->findBy(['project' => $project, 'reviewStatus' => 'human_review_required']);
-
-        if (count($pendingClaims) > 0) {
-            $pendingIds = array_map(fn(ClaimNode $c) => $c->getClaimId(), $pendingClaims);
+        // Human-review gate (delegated to App\Service\Export\ExportGate so the predicate is unit-testable).
+        $allClaims = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
+        if (ExportGate::isBlocked($allClaims)) {
             return $this->json([
                 'error'       => 'Export blocked: human review required',
-                'pending_ids' => $pendingIds,
+                'pending_ids' => ExportGate::blockingClaimIds($allClaims),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Assemble payload
         $studies      = $this->em->getRepository(NAMStudy::class)->findBy(['project' => $project]);
-        $claimNodes   = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
+        $claimNodes   = $allClaims;
         $ectdMappings = $this->em->getRepository(ECTDMapping::class)->findAll(); // filter by project in production
 
         $evidenceItems = [];

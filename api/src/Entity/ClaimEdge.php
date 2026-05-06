@@ -16,7 +16,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A directed edge in the weight-of-evidence claim graph.
- * relationship: supports | refutes | qualifies | requires
+ * relationship vocabulary (NAMO brief):
+ *   supports | contradicts | refutes | qualifies | requires |
+ *   depends_on | limited_by | derived_from | conforms_to | maps_to_ectd_section
+ *
+ * Note: 'refutes' is retained for backwards compatibility; new clients
+ * should prefer 'contradicts'.
  */
 #[ORM\Entity(repositoryClass: ClaimEdgeRepository::class)]
 #[ORM\Table(name: 'claim_edges')]
@@ -39,9 +44,23 @@ class ClaimEdge
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ClaimNode $toClaim;
 
-    /** supports | refutes | qualifies | requires */
-    #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: ['supports', 'refutes', 'qualifies', 'requires'])]
+    /**
+     * supports | contradicts | refutes | qualifies | requires |
+     * depends_on | limited_by | derived_from | conforms_to | maps_to_ectd_section
+     */
+    #[ORM\Column(length: 30)]
+    #[Assert\Choice(choices: [
+        'supports',
+        'contradicts',
+        'refutes',
+        'qualifies',
+        'requires',
+        'depends_on',
+        'limited_by',
+        'derived_from',
+        'conforms_to',
+        'maps_to_ectd_section',
+    ])]
     private string $relationship = 'supports';
 
     public function __construct()

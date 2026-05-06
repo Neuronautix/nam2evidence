@@ -2,7 +2,7 @@
 
 import { ECTDMapping } from '@/lib/types';
 import { ectdModule4Tree } from '@/lib/demoData';
-import { FolderOpen, FileText, ChevronDown, ChevronRight } from 'lucide-react';
+import { FolderOpen, FileText, ChevronDown, ChevronRight, Pencil, X } from 'lucide-react';
 import { useState } from 'react';
 import clsx from 'clsx';
 
@@ -15,6 +15,8 @@ interface ECTDTreeNode {
 
 interface ECTDTreeProps {
   mappings: ECTDMapping[];
+  onEdit?: (mapping: ECTDMapping) => void;
+  onDelete?: (mappingId: string) => void;
 }
 
 function TreeNodeRow({
@@ -22,11 +24,15 @@ function TreeNodeRow({
   depth,
   mappedSections,
   mappings,
+  onEdit,
+  onDelete,
 }: {
   node: ECTDTreeNode;
   depth: number;
   mappedSections: Set<string>;
   mappings: ECTDMapping[];
+  onEdit?: (mapping: ECTDMapping) => void;
+  onDelete?: (mappingId: string) => void;
 }) {
   const isMapped = mappedSections.has(node.section);
   const hasChildren = node.children.length > 0;
@@ -89,7 +95,44 @@ function TreeNodeRow({
                 {m.claim_id && (
                   <span className="badge bg-violet-100 text-violet-700 text-xs font-mono">{m.claim_id}</span>
                 )}
+                {m.confidence && (
+                  <span
+                    className={clsx(
+                      'badge text-xs',
+                      m.confidence === 'high' && 'bg-green-100 text-green-700',
+                      m.confidence === 'medium' && 'bg-amber-100 text-amber-700',
+                      m.confidence === 'low' && 'bg-slate-100 text-slate-600'
+                    )}
+                  >
+                    {m.confidence} confidence
+                  </span>
+                )}
+                <div className="ml-auto flex items-center gap-1">
+                  {onEdit && (
+                    <button
+                      type="button"
+                      onClick={() => onEdit(m)}
+                      title="Edit mapping"
+                      className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-slate-800"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      type="button"
+                      onClick={() => onDelete(m.mapping_id)}
+                      title="Delete mapping"
+                      className="p-1 rounded hover:bg-red-50 text-slate-500 hover:text-red-700"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
+              {m.document_title && (
+                <p className="text-xs text-slate-700 font-medium mb-1">{m.document_title}</p>
+              )}
               <p className="text-xs text-slate-600 leading-relaxed">{m.notes}</p>
               {m.justification && (
                 <p className="text-xs text-slate-500 italic mt-1 leading-relaxed">
@@ -110,14 +153,22 @@ function TreeNodeRow({
             depth={depth + 1}
             mappedSections={mappedSections}
             mappings={mappings}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         ))}
     </div>
   );
 }
 
-export default function ECTDTree({ mappings }: ECTDTreeProps) {
+export default function ECTDTree({ mappings, onEdit, onDelete }: ECTDTreeProps) {
   const mappedSections = new Set(mappings.map((m) => m.ectd_section));
+
+  // Render mappings whose section is not represented in the static tree as an
+  // additional "Other mapped sections" group, so user-added mappings remain visible.
+  const treeSections = collectAllSections(ectdModule4Tree as ECTDTreeNode[]);
+  const orphanMappings = mappings.filter((m) => !treeSections.has(m.ectd_section));
+  const orphanSectionSet = new Set(orphanMappings.map((m) => m.ectd_section));
 
   return (
     <div>
@@ -140,16 +191,47 @@ export default function ECTDTree({ mappings }: ECTDTreeProps) {
 
       {/* Tree */}
       <div className="card p-3">
-        {ectdModule4Tree.map((node) => (
+        {(ectdModule4Tree as ECTDTreeNode[]).map((node) => (
           <TreeNodeRow
             key={node.section}
-            node={node as ECTDTreeNode}
+            node={node}
             depth={0}
             mappedSections={mappedSections}
             mappings={mappings}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         ))}
+
+        {orphanSectionSet.size > 0 && (
+          <div className="mt-4 pt-3 border-t border-slate-200">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 px-2">
+              Other mapped sections
+            </p>
+            {Array.from(orphanSectionSet).map((section) => (
+              <TreeNodeRow
+                key={section}
+                node={{ section, title: '(custom section)', children: [] }}
+                depth={0}
+                mappedSections={mappedSections}
+                mappings={mappings}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+function collectAllSections(nodes: ECTDTreeNode[]): Set<string> {
+  const out = new Set<string>();
+  function walk(n: ECTDTreeNode) {
+    out.add(n.section);
+    n.children.forEach(walk);
+  }
+  nodes.forEach(walk);
+  return out;
 }

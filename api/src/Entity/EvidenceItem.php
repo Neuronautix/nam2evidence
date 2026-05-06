@@ -75,6 +75,19 @@ class EvidenceItem
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $supportingData = null;
 
+    /** Quantitative metric value, e.g. "R²=0.92" */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $metricValue = null;
+
+    /** Pre-specified acceptance threshold, e.g. "≥0.80" */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $threshold = null;
+
+    /** pass | fail | null */
+    #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Choice(choices: ['pass', 'fail', null])]
+    private ?string $passFail = null;
+
     public function __construct()
     {
         $this->id = new Ulid();
@@ -97,4 +110,10 @@ class EvidenceItem
     public function setNotes(?string $v): static { $this->notes = $v; return $this; }
     public function getSupportingData(): ?string { return $this->supportingData; }
     public function setSupportingData(?string $v): static { $this->supportingData = $v; return $this; }
+    public function getMetricValue(): ?string { return $this->metricValue; }
+    public function setMetricValue(?string $v): static { $this->metricValue = $v; return $this; }
+    public function getThreshold(): ?string { return $this->threshold; }
+    public function setThreshold(?string $v): static { $this->threshold = $v; return $this; }
+    public function getPassFail(): ?string { return $this->passFail; }
+    public function setPassFail(?string $v): static { $this->passFail = $v; return $this; }
 }

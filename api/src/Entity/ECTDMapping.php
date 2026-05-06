@@ -13,6 +13,7 @@ use App\Repository\ECTDMappingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Maps a NAM study report or claim summary to a specific eCTD Module 4 section.
@@ -59,6 +60,11 @@ class ECTDMapping
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $justification = null;
 
+    /** Reviewer confidence in the eCTD section assignment: low | medium | high | null */
+    #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Choice(choices: ['low', 'medium', 'high', null])]
+    private ?string $confidence = null;
+
     public function __construct()
     {
         $this->id = new Ulid();
@@ -81,4 +87,6 @@ class ECTDMapping
     public function setNotes(?string $v): static { $this->notes = $v; return $this; }
     public function getJustification(): ?string { return $this->justification; }
     public function setJustification(?string $v): static { $this->justification = $v; return $this; }
+    public function getConfidence(): ?string { return $this->confidence; }
+    public function setConfidence(?string $v): static { $this->confidence = $v; return $this; }
 }

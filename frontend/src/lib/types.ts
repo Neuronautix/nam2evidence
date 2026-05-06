@@ -7,7 +7,10 @@ export type RegulatoryConfidenceLevel =
   | 'potentially_pivotal';
 
 export type ReviewStatus =
+  | 'draft'
   | 'pending'
+  | 'validated'
+  | 'reviewer_pending'
   | 'human_review_required'
   | 'approved'
   | 'rejected';
@@ -126,10 +129,22 @@ export interface ClaimNode {
   parent_claim_id?: string;
 }
 
+export type ClaimEdgeRelationship =
+  | 'supports'
+  | 'contradicts'
+  | 'refutes'
+  | 'qualifies'
+  | 'depends_on'
+  | 'requires'
+  | 'limited_by'
+  | 'derived_from'
+  | 'conforms_to'
+  | 'maps_to_ectd_section';
+
 export interface ClaimEdge {
   from_claim_id: string;
   to_claim_id: string;
-  relationship: 'supports' | 'refutes' | 'qualifies' | 'requires';
+  relationship: ClaimEdgeRelationship;
 }
 
 export interface ECTDSection {
@@ -139,15 +154,19 @@ export interface ECTDSection {
   description?: string;
 }
 
+export type ECTDMappingConfidence = 'low' | 'medium' | 'high';
+
 export interface ECTDMapping {
   mapping_id: string;
   study_id?: string;
   claim_id?: string;
+  document_title?: string;
   evidence_type: string;
   ectd_section: string;
   ectd_title: string;
   notes: string;
   justification?: string;
+  confidence?: ECTDMappingConfidence;
 }
 
 export interface ValidationMatrix {

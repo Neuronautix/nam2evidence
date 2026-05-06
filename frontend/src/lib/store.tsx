@@ -47,6 +47,11 @@ interface StoreContextValue {
   updateClaimStatus: (claimId: string, status: ClaimNode['review_status']) => void;
   updateEvidenceStatus: (evidenceId: string, status: EvidenceItem['status'], notes?: string) => void;
   createProject: (project: Project) => void;
+  importNAMOStudy: (projectId: string, parsed: Record<string, unknown>) => NAMStudy;
+  updateStudy: (studyId: string, partial: Partial<NAMStudy>) => void;
+  addECTDMapping: (mapping: ECTDMapping) => void;
+  updateECTDMapping: (mappingId: string, partial: Partial<ECTDMapping>) => void;
+  deleteECTDMapping: (mappingId: string) => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -164,6 +169,90 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, projects: [...prev.projects, project] }));
   }, []);
 
+  const importNAMOStudy = useCallback(
+    (projectId: string, parsed: Record<string, unknown>): NAMStudy => {
+      const studyId =
+        (typeof parsed.id === 'string' && parsed.id) ||
+        (typeof parsed.study_id === 'string' && parsed.study_id) ||
+        `NAM-STUDY-${Date.now()}`;
+      const studyName =
+        (typeof parsed.name === 'string' && parsed.name) ||
+        (typeof parsed.study_name === 'string' && parsed.study_name) ||
+        (typeof parsed.title === 'string' && parsed.title) ||
+        'Imported NAM Study';
+
+      const modelSystem = (parsed.model_system as NAMStudy['model_system']) ?? {
+        namo_class: 'Organoid',
+        species: '',
+        cell_type: '',
+        tissue_origin: '',
+        culture_conditions: '',
+        vendor: '',
+      };
+
+      const isRecord = (v: unknown): v is Record<string, unknown> =>
+        typeof v === 'object' && v !== null && !Array.isArray(v);
+
+      const study: NAMStudy = {
+        study_id: studyId as string,
+        project_id: projectId,
+        context_of_use_id:
+          (typeof parsed.context_of_use_id === 'string' && parsed.context_of_use_id) || '',
+        title: studyName as string,
+        model_system: modelSystem,
+        experimental_design: isRecord(parsed.experimental_design)
+          ? parsed.experimental_design
+          : {},
+        assay_metadata: isRecord(parsed.assay_metadata) ? parsed.assay_metadata : {},
+        data_outputs: isRecord(parsed.data_outputs) ? parsed.data_outputs : {},
+        provenance: isRecord(parsed.provenance) ? parsed.provenance : {},
+        created_at: new Date().toISOString(),
+      };
+
+      setState((prev) => {
+        const existingIdx = prev.studies.findIndex((s) => s.project_id === projectId);
+        const studies =
+          existingIdx >= 0
+            ? prev.studies.map((s, i) => (i === existingIdx ? study : s))
+            : [...prev.studies, study];
+        return { ...prev, studies };
+      });
+
+      return study;
+    },
+    []
+  );
+
+  const updateStudy = useCallback((studyId: string, partial: Partial<NAMStudy>) => {
+    setState((prev) => ({
+      ...prev,
+      studies: prev.studies.map((s) => (s.study_id === studyId ? { ...s, ...partial } : s)),
+    }));
+  }, []);
+
+  const addECTDMapping = useCallback((mapping: ECTDMapping) => {
+    setState((prev) => ({ ...prev, ectdMappings: [...prev.ectdMappings, mapping] }));
+  }, []);
+
+  const updateECTDMapping = useCallback(
+    (mappingId: string, partial: Partial<ECTDMapping>) => {
+      setState((prev) => ({
+        ...prev,
+        ectdMappings: prev.ectdMappings.map((m) =>
+          m.mapping_id === mappingId ? { ...m, ...partial } : m
+        ),
+      }));
+    },
+    []
+  );
+
+  const deleteECTDMapping = useCallback((mappingId: string) => {
+    setState((prev) => ({
+      ...prev,
+      ectdMappings: prev.ectdMappings.filter((m) => m.mapping_id !== mappingId),
+    }));
+  }, []);
+
   return (
     <StoreContext.Provider
       value={{
@@ -179,6 +268,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         updateClaimStatus,
         updateEvidenceStatus,
         createProject,
+        importNAMOStudy,
+        updateStudy,
+        addECTDMapping,
+        updateECTDMapping,
+        deleteECTDMapping,
       }}
     >
       {children}
