@@ -114,7 +114,6 @@ class ContextOfUseCard
 
     public function __construct()
     {
-        $this->id = new Ulid();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }

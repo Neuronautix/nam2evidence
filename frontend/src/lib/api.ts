@@ -2,10 +2,13 @@ import {
   ClaimEdge,
   ClaimNode,
   ContextOfUseCard,
+  DrugDevelopmentStage,
   ECTDMapping,
   EvidenceItem,
   NAMStudy,
+  NAMModelType,
   Project,
+  RegulatoryConfidenceLevel,
 } from './types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
@@ -46,6 +49,20 @@ type ApiWorkspace = {
   claim_edges: Array<Record<string, unknown>>;
   ectd_mappings: Array<Record<string, unknown>>;
 };
+
+type ApiEntity = Record<string, unknown>;
+
+function asString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+function asStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+function asRecord(value: unknown): ApiEntity | undefined {
+  return typeof value === 'object' && value !== null ? (value as ApiEntity) : undefined;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -132,90 +149,107 @@ function toProject(p: ApiProject): Project {
   };
 }
 
-function toCOU(raw: Record<string, any>): ContextOfUseCard {
+function toCOU(raw: ApiEntity): ContextOfUseCard {
+  const project = asRecord(raw.project);
+
   return {
-    cou_id: raw.couId,
-    project_id: raw.project?.id ?? '',
-    nam_type: raw.namType,
-    regulatory_question: raw.regulatoryQuestion,
-    drug_development_stage: raw.drugDevelopmentStage,
-    intended_use: raw.intendedUse,
-    decision_supported: raw.decisionSupported,
-    biological_domain: raw.biologicalDomain,
-    endpoint_class: raw.endpointClass,
-    population_relevance: raw.populationRelevance ?? '',
-    limitations: Array.isArray(raw.limitations) ? raw.limitations : [],
-    acceptance_criteria: Array.isArray(raw.acceptanceCriteria) ? raw.acceptanceCriteria : [],
-    regulatory_confidence_level: raw.regulatoryConfidenceLevel,
-    version: raw.version ?? '1.0',
-    created_at: raw.createdAt ?? new Date().toISOString(),
-    updated_at: raw.updatedAt ?? new Date().toISOString(),
+    cou_id: asString(raw.couId),
+    project_id: asString(project?.id),
+    nam_type: asString(raw.namType) as NAMModelType,
+    regulatory_question: asString(raw.regulatoryQuestion),
+    drug_development_stage: asString(raw.drugDevelopmentStage) as DrugDevelopmentStage,
+    intended_use: asString(raw.intendedUse),
+    decision_supported: asString(raw.decisionSupported),
+    biological_domain: asString(raw.biologicalDomain),
+    endpoint_class: asString(raw.endpointClass),
+    population_relevance: asString(raw.populationRelevance),
+    limitations: asStringArray(raw.limitations),
+    acceptance_criteria: asStringArray(raw.acceptanceCriteria),
+    regulatory_confidence_level: asString(raw.regulatoryConfidenceLevel) as RegulatoryConfidenceLevel,
+    version: asString(raw.version, '1.0'),
+    created_at: asString(raw.createdAt, new Date().toISOString()),
+    updated_at: asString(raw.updatedAt, new Date().toISOString()),
   };
 }
 
-function toStudy(raw: Record<string, any>): NAMStudy {
+function toStudy(raw: ApiEntity): NAMStudy {
+  const project = asRecord(raw.project);
+  const contextOfUse = asRecord(raw.contextOfUse);
+
   return {
-    study_id: raw.studyId,
-    project_id: raw.project?.id ?? '',
-    context_of_use_id: raw.contextOfUse?.couId ?? '',
-    title: raw.title ?? '',
-    model_system: raw.modelSystem ?? {},
-    experimental_design: raw.experimentalDesign ?? {},
-    assay_metadata: raw.assayMetadata ?? {},
-    data_outputs: raw.dataOutputs ?? {},
-    provenance: raw.provenance ?? {},
-    created_at: raw.createdAt ?? new Date().toISOString(),
+    study_id: asString(raw.studyId),
+    project_id: asString(project?.id),
+    context_of_use_id: asString(contextOfUse?.couId),
+    title: asString(raw.title),
+    model_system: ((asRecord(raw.modelSystem) ?? {}) as unknown) as NAMStudy['model_system'],
+    experimental_design: asRecord(raw.experimentalDesign) ?? {},
+    assay_metadata: asRecord(raw.assayMetadata) ?? {},
+    data_outputs: asRecord(raw.dataOutputs) ?? {},
+    provenance: asRecord(raw.provenance) ?? {},
+    created_at: asString(raw.createdAt, new Date().toISOString()),
   };
 }
 
-function toEvidence(raw: Record<string, any>): EvidenceItem {
+function toEvidence(raw: ApiEntity): EvidenceItem {
+  const study = asRecord(raw.study);
+
   return {
-    evidence_id: raw.evidenceId,
-    study_id: raw.study?.studyId ?? '',
-    domain: raw.domain,
-    question: raw.question,
-    evidence_type: raw.evidenceType,
-    status: raw.status,
-    notes: raw.notes ?? '',
-    supporting_data: raw.supportingData ?? undefined,
+    evidence_id: asString(raw.evidenceId),
+    study_id: asString(study?.studyId),
+    domain: asString(raw.domain) as EvidenceItem['domain'],
+    question: asString(raw.question),
+    evidence_type: asString(raw.evidenceType),
+    status: asString(raw.status) as EvidenceItem['status'],
+    notes: asString(raw.notes),
+    supporting_data: typeof raw.supportingData === 'string' ? raw.supportingData : undefined,
   };
 }
 
-function toClaim(raw: Record<string, any>): ClaimNode {
+function toClaim(raw: ApiEntity): ClaimNode {
+  const project = asRecord(raw.project);
+  const contextOfUse = asRecord(raw.contextOfUse);
+  const parentClaim = asRecord(raw.parentClaim);
+
   return {
-    claim_id: raw.claimId,
-    project_id: raw.project?.id ?? '',
-    claim_text: raw.claimText,
-    claim_type: raw.claimType,
-    context_of_use_id: raw.contextOfUse?.couId ?? '',
-    confidence: raw.confidence,
-    supporting_evidence: Array.isArray(raw.supportingEvidence) ? raw.supportingEvidence : [],
-    contradictory_evidence: Array.isArray(raw.contradictoryEvidence) ? raw.contradictoryEvidence : [],
-    limitations: Array.isArray(raw.limitations) ? raw.limitations : [],
-    ectd_target_sections: Array.isArray(raw.ectdTargetSections) ? raw.ectdTargetSections : [],
-    review_status: raw.reviewStatus,
-    parent_claim_id: raw.parentClaim?.claimId ?? undefined,
+    claim_id: asString(raw.claimId),
+    project_id: asString(project?.id),
+    claim_text: asString(raw.claimText),
+    claim_type: asString(raw.claimType) as ClaimNode['claim_type'],
+    context_of_use_id: asString(contextOfUse?.couId),
+    confidence: asString(raw.confidence) as ClaimNode['confidence'],
+    supporting_evidence: asStringArray(raw.supportingEvidence),
+    contradictory_evidence: asStringArray(raw.contradictoryEvidence),
+    limitations: asStringArray(raw.limitations),
+    ectd_target_sections: asStringArray(raw.ectdTargetSections),
+    review_status: asString(raw.reviewStatus) as ClaimNode['review_status'],
+    parent_claim_id: typeof parentClaim?.claimId === 'string' ? parentClaim.claimId : undefined,
   };
 }
 
-function toClaimEdge(raw: Record<string, any>): ClaimEdge {
+function toClaimEdge(raw: ApiEntity): ClaimEdge {
+  const fromClaim = asRecord(raw.fromClaim);
+  const toClaim = asRecord(raw.toClaim);
+
   return {
-    from_claim_id: raw.fromClaim?.claimId ?? '',
-    to_claim_id: raw.toClaim?.claimId ?? '',
-    relationship: raw.relationship,
+    from_claim_id: asString(fromClaim?.claimId),
+    to_claim_id: asString(toClaim?.claimId),
+    relationship: asString(raw.relationship) as ClaimEdge['relationship'],
   };
 }
 
-function toMapping(raw: Record<string, any>): ECTDMapping {
+function toMapping(raw: ApiEntity): ECTDMapping {
+  const study = asRecord(raw.study);
+  const claim = asRecord(raw.claim);
+
   return {
-    mapping_id: raw.mappingId,
-    study_id: raw.study?.studyId ?? undefined,
-    claim_id: raw.claim?.claimId ?? undefined,
-    evidence_type: raw.evidenceType,
-    ectd_section: raw.ectdSection,
-    ectd_title: raw.ectdTitle,
-    notes: raw.notes ?? '',
-    justification: raw.justification ?? undefined,
+    mapping_id: asString(raw.mappingId),
+    study_id: typeof study?.studyId === 'string' ? study.studyId : undefined,
+    claim_id: typeof claim?.claimId === 'string' ? claim.claimId : undefined,
+    evidence_type: asString(raw.evidenceType),
+    ectd_section: asString(raw.ectdSection),
+    ectd_title: asString(raw.ectdTitle),
+    notes: asString(raw.notes),
+    justification: typeof raw.justification === 'string' ? raw.justification : undefined,
   };
 }
 
@@ -260,7 +294,7 @@ export async function fetchWorkspace(projectId: string): Promise<{
 }
 
 export async function updateCOUApi(projectId: string, cou: ContextOfUseCard): Promise<ContextOfUseCard> {
-  const data = await request<Record<string, any>>(`/api/v1/projects/${projectId}/cou/${cou.cou_id}`, {
+  const data = await request<ApiEntity>(`/api/v1/projects/${projectId}/cou/${cou.cou_id}`, {
     method: 'PUT',
     body: JSON.stringify(cou),
   });
@@ -269,7 +303,7 @@ export async function updateCOUApi(projectId: string, cou: ContextOfUseCard): Pr
 }
 
 export async function updateEvidenceApi(projectId: string, item: EvidenceItem): Promise<EvidenceItem> {
-  const data = await request<Record<string, any>>(`/api/v1/projects/${projectId}/evidence/${item.evidence_id}`, {
+  const data = await request<ApiEntity>(`/api/v1/projects/${projectId}/evidence/${item.evidence_id}`, {
     method: 'PUT',
     body: JSON.stringify({ status: item.status, notes: item.notes }),
   });
@@ -282,7 +316,7 @@ export async function updateClaimStatusApi(
   claimId: string,
   status: ClaimNode['review_status']
 ): Promise<ClaimNode> {
-  const data = await request<Record<string, any>>(`/api/v1/projects/${projectId}/claims/${claimId}/status`, {
+  const data = await request<ApiEntity>(`/api/v1/projects/${projectId}/claims/${claimId}/status`, {
     method: 'PUT',
     body: JSON.stringify({ status }),
   });

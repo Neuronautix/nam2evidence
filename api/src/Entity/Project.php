@@ -77,7 +77,6 @@ class Project
 
     public function __construct()
     {
-        $this->id = new Ulid();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->contextOfUseCards = new ArrayCollection();

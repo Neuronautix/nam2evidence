@@ -131,6 +131,9 @@ class ExportController extends AbstractController
     {
         $studies = $this->em->getRepository(NAMStudy::class)->findBy(['project' => $project]);
         $claimNodes = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
+        $evidenceItems = count($studies) > 0
+            ? $this->em->getRepository(EvidenceItem::class)->findBy(['study' => $studies])
+            : [];
         $ectdMappings = $this->em->createQueryBuilder()
             ->select('m')
             ->from(ECTDMapping::class, 'm')
@@ -140,13 +143,6 @@ class ExportController extends AbstractController
             ->setParameter('project', $project)
             ->getQuery()
             ->getResult();
-
-        $evidenceItems = [];
-        foreach ($studies as $study) {
-            foreach ($study->getEvidenceItems() as $item) {
-                $evidenceItems[] = $item;
-            }
-        }
 
         return [
             'package_id' => 'PKG-' . (string) new Ulid(),

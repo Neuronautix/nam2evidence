@@ -44,7 +44,15 @@ RUN echo 'server { \
 }' > /etc/nginx/http.d/default.conf
 
 # Supervisor config
-RUN echo '[supervisord]\nnodaemon=true\n\n[program:php-fpm]\ncommand=php-fpm -F\n\n[program:nginx]\ncommand=nginx -g "daemon off;"' \
+RUN printf '%s\n' \
+    '[supervisord]' \
+    'nodaemon=true' \
+    '' \
+    '[program:php-fpm]' \
+    'command=php-fpm -F' \
+    '' \
+    '[program:nginx]' \
+    'command=nginx -g "daemon off;"' \
     > /etc/supervisord.conf
 
 RUN mkdir -p var/cache var/log && chmod -R 777 var/

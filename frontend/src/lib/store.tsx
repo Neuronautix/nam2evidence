@@ -167,7 +167,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [loadProjectData]);
 
   const getProject = useCallback(
     (id: string) => state.projects.find((p) => p.id === id),
@@ -226,7 +226,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setError(e instanceof Error ? e.message : 'Failed to update COU');
       });
     }
-  }, []);
+  }, [loadProjectData]);
 
   const updateClaimStatus = useCallback((claimId: string, status: ClaimNode['review_status']) => {
     const claim = state.claimNodes.find((c) => c.claim_id === claimId);

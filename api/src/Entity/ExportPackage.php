@@ -48,7 +48,6 @@ class ExportPackage
 
     public function __construct()
     {
-        $this->id = new Ulid();
         $this->exportedAt = new \DateTimeImmutable();
     }
 

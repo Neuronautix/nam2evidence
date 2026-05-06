@@ -39,7 +39,7 @@ final class Version20260506000001 extends AbstractMigration
         // ── projects ──────────────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE projects (
-                id             CHAR(26) NOT NULL,
+                id             CHAR(36) NOT NULL,
                 name           VARCHAR(255) NOT NULL,
                 description    TEXT,
                 drug_name      VARCHAR(255) NOT NULL,
@@ -54,9 +54,9 @@ final class Version20260506000001 extends AbstractMigration
         // ── context_of_use_cards ──────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE context_of_use_cards (
-                id                           CHAR(26) NOT NULL,
+                id                           CHAR(36) NOT NULL,
                 cou_id                       VARCHAR(100) NOT NULL,
-                project_id                   CHAR(26) NOT NULL,
+                project_id                   CHAR(36) NOT NULL,
                 nam_type                     VARCHAR(60) NOT NULL,
                 regulatory_question          TEXT NOT NULL,
                 drug_development_stage       VARCHAR(60) NOT NULL,
@@ -81,10 +81,10 @@ final class Version20260506000001 extends AbstractMigration
         // ── nam_studies ───────────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE nam_studies (
-                id                  CHAR(26) NOT NULL,
+                id                  CHAR(36) NOT NULL,
                 study_id            VARCHAR(100) NOT NULL,
-                project_id          CHAR(26) NOT NULL,
-                context_of_use_id   CHAR(26) NOT NULL,
+                project_id          CHAR(36) NOT NULL,
+                context_of_use_id   CHAR(36) NOT NULL,
                 title               TEXT NOT NULL DEFAULT '',
                 model_system        JSONB NOT NULL DEFAULT '{}',
                 experimental_design JSONB NOT NULL DEFAULT '{}',
@@ -103,9 +103,9 @@ final class Version20260506000001 extends AbstractMigration
         // ── evidence_items ────────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE evidence_items (
-                id              CHAR(26) NOT NULL,
+                id              CHAR(36) NOT NULL,
                 evidence_id     VARCHAR(100) NOT NULL,
-                study_id        CHAR(26) NOT NULL,
+                study_id        CHAR(36) NOT NULL,
                 domain          VARCHAR(60) NOT NULL,
                 question        TEXT NOT NULL,
                 evidence_type   VARCHAR(255) NOT NULL DEFAULT '',
@@ -129,19 +129,19 @@ final class Version20260506000001 extends AbstractMigration
         // ── claim_nodes ───────────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE claim_nodes (
-                id                    CHAR(26) NOT NULL,
+                id                    CHAR(36) NOT NULL,
                 claim_id              VARCHAR(100) NOT NULL,
-                project_id            CHAR(26) NOT NULL,
+                project_id            CHAR(36) NOT NULL,
                 claim_text            TEXT NOT NULL,
                 claim_type            VARCHAR(30) NOT NULL DEFAULT 'empirical',
-                context_of_use_id     CHAR(26) NOT NULL,
+                context_of_use_id     CHAR(36) NOT NULL,
                 confidence            VARCHAR(30) NOT NULL DEFAULT 'exploratory',
                 supporting_evidence   JSONB NOT NULL DEFAULT '[]',
                 contradictory_evidence JSONB NOT NULL DEFAULT '[]',
                 limitations           JSONB NOT NULL DEFAULT '[]',
                 ectd_target_sections  JSONB NOT NULL DEFAULT '[]',
                 review_status         VARCHAR(30) NOT NULL DEFAULT 'human_review_required',
-                parent_claim_id       CHAR(26),
+                parent_claim_id       CHAR(36),
                 CONSTRAINT pk_claim_nodes PRIMARY KEY (id),
                 CONSTRAINT uq_claim_id UNIQUE (claim_id),
                 CONSTRAINT fk_claim_project FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
@@ -157,9 +157,9 @@ final class Version20260506000001 extends AbstractMigration
         // ── claim_edges ───────────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE claim_edges (
-                id              CHAR(26) NOT NULL,
-                from_claim_id   CHAR(26) NOT NULL,
-                to_claim_id     CHAR(26) NOT NULL,
+                id              CHAR(36) NOT NULL,
+                from_claim_id   CHAR(36) NOT NULL,
+                to_claim_id     CHAR(36) NOT NULL,
                 relationship    VARCHAR(20) NOT NULL DEFAULT 'supports',
                 CONSTRAINT pk_claim_edges PRIMARY KEY (id),
                 CONSTRAINT fk_edge_from FOREIGN KEY (from_claim_id) REFERENCES claim_nodes (id) ON DELETE CASCADE,
@@ -171,10 +171,10 @@ final class Version20260506000001 extends AbstractMigration
         // ── ectd_mappings ─────────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE ectd_mappings (
-                id              CHAR(26) NOT NULL,
+                id              CHAR(36) NOT NULL,
                 mapping_id      VARCHAR(100) NOT NULL,
-                study_id        CHAR(26),
-                claim_id        CHAR(26),
+                study_id        CHAR(36),
+                claim_id        CHAR(36),
                 evidence_type   VARCHAR(255) NOT NULL DEFAULT '',
                 ectd_section    VARCHAR(30) NOT NULL,
                 ectd_title      VARCHAR(255) NOT NULL DEFAULT '',
@@ -191,9 +191,9 @@ final class Version20260506000001 extends AbstractMigration
         // ── export_packages ───────────────────────────────────────────────────
         $this->addSql(<<<'SQL'
             CREATE TABLE export_packages (
-                id          CHAR(26) NOT NULL,
+                id          CHAR(36) NOT NULL,
                 package_id  VARCHAR(100) NOT NULL,
-                project_id  CHAR(26) NOT NULL,
+                project_id  CHAR(36) NOT NULL,
                 payload     JSONB NOT NULL DEFAULT '{}',
                 version     VARCHAR(20) NOT NULL DEFAULT '1.0',
                 exported_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,

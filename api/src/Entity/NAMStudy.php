@@ -92,7 +92,6 @@ class NAMStudy
 
     public function __construct()
     {
-        $this->id = new Ulid();
         $this->createdAt = new \DateTimeImmutable();
         $this->evidenceItems = new ArrayCollection();
     }

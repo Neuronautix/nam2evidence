@@ -26,7 +26,6 @@ export default function ExportCenter(props: ExportCenterProps) {
   const [backendPendingIds, setBackendPendingIds] = useState<string[]>([]);
 
   const pendingClaims = claimNodes.filter((c) => c.review_status === 'human_review_required');
-  const allApproved = pendingClaims.length === 0;
 
   const effectivePendingIds = backendPendingIds.length > 0
     ? backendPendingIds

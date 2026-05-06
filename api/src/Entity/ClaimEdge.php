@@ -58,7 +58,6 @@ class ClaimEdge
 
     public function __construct()
     {
-        $this->id = new Ulid();
     }
 
     public function getId(): Ulid { return $this->id; }
