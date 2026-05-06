@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,7 +24,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          limitation_analysis | regulatory_alignment
  */
 #[ORM\Entity(repositoryClass: EvidenceItemRepository::class)]
-#[ORM\Table(name: 'evidence_items')]
+#[ORM\Table(
+    name: 'evidence_items',
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'uq_evidence_study_domain_question', columns: ['study_id', 'domain', 'question'])
+    ]
+)]
 #[ApiResource(
     operations: [new GetCollection(), new Post(), new Get(), new Put()],
     normalizationContext: ['groups' => ['read']],
@@ -109,4 +115,14 @@ class EvidenceItem
     public function setNotes(?string $v): static { $this->notes = $v; return $this; }
     public function getSupportingData(): ?string { return $this->supportingData; }
     public function setSupportingData(?string $v): static { $this->supportingData = $v; return $this; }
+
+    #[Assert\Callback]
+    public function validateProjectConsistency(ExecutionContextInterface $context): void
+    {
+        if ($this->study->getContextOfUse()->getProject()->getId()->toRfc4122() !== $this->study->getProject()->getId()->toRfc4122()) {
+            $context->buildViolation('EvidenceItem study contextOfUse must belong to the same project as the study.')
+                ->atPath('study')
+                ->addViolation();
+        }
+    }
 }

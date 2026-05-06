@@ -27,12 +27,16 @@ export type EvidenceStatus = 'met' | 'partial' | 'not_met' | 'not_applicable';
 export type NAMModelType =
   | 'Organoid'
   | 'OrganOnChip'
+  | 'TissueOnChip'
+  | 'TwoDCellCulture'
+  | 'ThreeDCellCulture'
+  | 'CoCulture'
+  | 'CellLineModel'
   | 'QSARModel'
-  | 'CellBasedAssay'
-  | 'ComputationalModel'
-  | 'ExVivo'
-  | 'Spheroid'
-  | '3DPrintedTissue';
+  | 'PBPKModel'
+  | 'MLModel'
+  | 'DigitalTwin'
+  | 'MetabolicModel';
 
 export type DrugDevelopmentStage =
   | 'discovery'

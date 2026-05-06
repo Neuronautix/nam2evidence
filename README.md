@@ -74,6 +74,8 @@ cp api/.env.example api/.env
 docker compose up --build
 ```
 
+The frontend runs in API mode by default via `NEXT_PUBLIC_DATA_MODE=api`.
+
 | Service | URL |
 |---|---|
 | Frontend (Next.js) | http://localhost:3000 |
@@ -89,6 +91,15 @@ cd frontend
 npm install
 npm run dev
 # open http://localhost:3000
+```
+
+To force demo mode locally, set `NEXT_PUBLIC_DATA_MODE=demo`.
+
+To run against the backend API, set:
+
+```bash
+NEXT_PUBLIC_DATA_MODE=api
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 ### Run the backend locally

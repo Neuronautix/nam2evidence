@@ -68,73 +68,73 @@ Planning source: initial_prompt.md + current repository state
 ### 0.1 API serialization and contract stabilization
 - [x] Add explicit serializer groups for all API resources (read/write) and sensitive-field control.
 - [x] Ensure all relations needed by frontend are exposed in predictable shape.
-- [ ] Publish/verify OpenAPI schema and freeze v1 field names.
+- [x] Publish/verify OpenAPI schema and freeze v1 field names.
 
 Acceptance criteria:
-- [ ] GET collection and item responses are stable and documented.
-- [ ] POST/PUT payload examples work for all core entities.
-- [ ] Frontend can consume API without ad hoc field transformation hacks.
+- [x] GET collection and item responses are stable and documented.
+- [x] POST/PUT payload examples work for all core entities.
+- [x] Frontend can consume API without ad hoc field transformation hacks.
 
 ### 0.2 Backend correctness fixes
-- [ ] Scope eCTD mapping retrieval by project in export flow.
-- [ ] Add backend validation for consistency:
-  - [ ] ClaimNode context_of_use belongs to same Project.
-  - [ ] EvidenceItem study belongs to same Project context chain.
-  - [ ] ECTDMapping references claim/study from same project.
-- [ ] Add uniqueness/integrity checks where missing.
+- [x] Scope eCTD mapping retrieval by project in export flow.
+- [x] Add backend validation for consistency:
+  - [x] ClaimNode context_of_use belongs to same Project.
+  - [x] EvidenceItem study belongs to same Project context chain.
+  - [x] ECTDMapping references claim/study from same project.
+- [x] Add uniqueness/integrity checks where missing.
 
 Acceptance criteria:
-- [ ] Export payload contains only project-owned records.
-- [ ] Invalid cross-project references are rejected with 4xx.
-- [ ] No silent data contamination across projects.
+- [x] Export payload contains only project-owned records.
+- [x] Invalid cross-project references are rejected with 4xx.
+- [x] No silent data contamination across projects.
 
 ### 0.3 Migration and schema audit
-- [ ] Generate follow-up migration(s) for any discovered schema drift.
-- [ ] Add DB indexes for likely query paths:
-  - [ ] claim_nodes(project_id, review_status)
-  - [ ] evidence_items(study_id, domain, status)
-  - [ ] ectd_mappings(study_id, claim_id, ectd_section)
-- [ ] Confirm nullable/required columns match business rules.
+- [x] Generate follow-up migration(s) for any discovered schema drift.
+- [x] Add DB indexes for likely query paths:
+  - [x] claim_nodes(project_id, review_status)
+  - [x] evidence_items(study_id, domain, status)
+  - [x] ectd_mappings(study_id, claim_id, ectd_section)
+- [x] Confirm nullable/required columns match business rules.
 
 Acceptance criteria:
-- [ ] Fresh boot + migrations succeed in clean environment.
-- [ ] Existing data migrates without loss.
+- [x] Fresh boot + migrations succeed in clean environment.
+- [x] Existing data migrates without loss.
 
 ## Phase 1 - Frontend to API integration (Sprint 2)
 
 ### 1.1 Data access layer
-- [ ] Implement typed API client in frontend/lib.
-- [ ] Replace direct local-store CRUD calls with API calls for:
-  - [ ] Projects
-  - [ ] COU cards
-  - [ ] NAM studies
-  - [ ] Evidence items
-  - [ ] Claim nodes/edges
-  - [ ] ECTD mappings
-- [ ] Keep local storage only for UI state (non-domain data) where needed.
+- [x] Implement typed API client in frontend/lib.
+- [x] Replace direct local-store CRUD calls with API calls for:
+  - [x] Projects
+  - [x] COU cards
+  - [x] NAM studies
+  - [x] Evidence items
+  - [x] Claim nodes/edges
+  - [x] ECTD mappings
+- [x] Keep local storage only for UI state (non-domain data) where needed.
 
 Acceptance criteria:
-- [ ] Create/edit actions persist to backend.
-- [ ] Page refresh retains server state.
-- [ ] API error states are rendered with user-readable messages.
+- [x] Create/edit actions persist to backend.
+- [x] Page refresh retains server state.
+- [x] API error states are rendered with user-readable messages.
 
 ### 1.2 Incremental cutover strategy
-- [ ] Add feature flag for demo mode vs API mode.
-- [ ] Keep existing demo dataset available for standalone demos.
-- [ ] Add empty-state flows for brand-new projects with no data.
+- [x] Add feature flag for demo mode vs API mode.
+- [x] Keep existing demo dataset available for standalone demos.
+- [x] Add empty-state flows for brand-new projects with no data.
 
 Acceptance criteria:
-- [ ] Demo mode still functions.
-- [ ] API mode becomes default in compose/dev environment.
+- [x] Demo mode still functions.
+- [x] API mode becomes default in compose/dev environment.
 
 ### 1.3 UI consistency and taxonomy alignment
-- [ ] Align frontend NAM model enumerations with backend and NAMO targets.
-- [ ] Align claim edge relationship vocabulary with product brief decisions.
-- [ ] Normalize confidence/review labels and color semantics across screens.
+- [x] Align frontend NAM model enumerations with backend and NAMO targets.
+- [x] Align claim edge relationship vocabulary with product brief decisions.
+- [x] Normalize confidence/review labels and color semantics across screens.
 
 Acceptance criteria:
-- [ ] Same domain values accepted in both frontend and backend.
-- [ ] No transformation layer required for enum mismatch.
+- [x] Same domain values accepted in both frontend and backend.
+- [x] No transformation layer required for enum mismatch.
 
 ## Phase 2 - Validation and regulatory logic (Sprint 3)
 
@@ -290,14 +290,14 @@ Acceptance criteria:
 ## 6) Immediate next actions (this week)
 
 ### P1 tasks
-- [ ] Implement project-scoped eCTD filtering in backend export controller.
+- [x] Implement project-scoped eCTD filtering in backend export controller.
 - [x] Add serializer groups and verify API payload shapes.
-- [ ] Build frontend API client and wire Project + COU pages first.
+- [x] Build frontend API client and wire Project + COU pages first.
 - [ ] Add integration test covering export-blocked-when-pending-claims.
 
 ### P2 tasks
-- [ ] Wire Study and Validation pages to API.
-- [ ] Wire Claim Graph status changes to API.
+- [x] Wire Study and Validation pages to API.
+- [x] Wire Claim Graph status changes to API.
 - [ ] Replace client-built exports with backend export endpoints.
 
 ## 7) Deferred (post-MVP)

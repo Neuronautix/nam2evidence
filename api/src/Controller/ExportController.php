@@ -11,6 +11,7 @@ use App\Entity\ExportPackage;
 use App\Entity\NAMStudy;
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +58,15 @@ class ExportController extends AbstractController
         // Assemble payload
         $studies      = $this->em->getRepository(NAMStudy::class)->findBy(['project' => $project]);
         $claimNodes   = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
-        $ectdMappings = $this->em->getRepository(ECTDMapping::class)->findAll(); // filter by project in production
+        $ectdMappings = $this->em->createQueryBuilder()
+            ->select('m')
+            ->from(ECTDMapping::class, 'm')
+            ->leftJoin('m.study', 's', Join::WITH)
+            ->leftJoin('m.claim', 'c', Join::WITH)
+            ->where('s.project = :project OR c.project = :project')
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
 
         $evidenceItems = [];
         foreach ($studies as $study) {

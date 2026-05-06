@@ -20,7 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * relationship: supports | refutes | qualifies | requires
  */
 #[ORM\Entity(repositoryClass: ClaimEdgeRepository::class)]
-#[ORM\Table(name: 'claim_edges')]
+#[ORM\Table(
+    name: 'claim_edges',
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'uq_claim_edge_relation', columns: ['from_claim_id', 'to_claim_id', 'relationship'])
+    ]
+)]
 #[ApiResource(
     operations: [new GetCollection(), new Post(), new Get()],
     normalizationContext: ['groups' => ['read']],

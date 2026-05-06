@@ -1,13 +1,20 @@
 'use client';
 
+import { useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { useStore } from '@/lib/store';
 import { useParams } from 'next/navigation';
 
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {
   const params = useParams<{ id: string }>();
-  const { getProject } = useStore();
+  const { getProject, loadProjectData, dataMode } = useStore();
   const project = getProject(params.id);
+
+  useEffect(() => {
+    if (dataMode !== 'demo') {
+      void loadProjectData(params.id);
+    }
+  }, [dataMode, params.id, loadProjectData]);
 
   return (
     <div className="flex min-h-screen">

@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -132,4 +133,14 @@ class ClaimNode
     public function setReviewStatus(string $v): static { $this->reviewStatus = $v; return $this; }
     public function getParentClaim(): ?ClaimNode { return $this->parentClaim; }
     public function setParentClaim(?ClaimNode $v): static { $this->parentClaim = $v; return $this; }
+
+    #[Assert\Callback]
+    public function validateProjectConsistency(ExecutionContextInterface $context): void
+    {
+        if ($this->contextOfUse->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('ClaimNode contextOfUse must belong to the same project.')
+                ->atPath('contextOfUse')
+                ->addViolation();
+        }
+    }
 }

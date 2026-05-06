@@ -14,7 +14,7 @@ function ReviewStatusIcon({ status }: { status: Project['review_status'] }) {
 }
 
 export default function HomePage() {
-  const { state, createProject } = useStore();
+  const { state, createProject, loading, error, dataMode } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', description: '', drug_name: '', sponsor: '' });
 
@@ -57,6 +57,12 @@ export default function HomePage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-10">
+        {error && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         {/* Hero */}
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Evidence Packaging Dashboard</h2>
@@ -65,6 +71,7 @@ export default function HomePage() {
             with IND/eCTD submission requirements. Each project organises evidence across five
             structured workspaces.
           </p>
+          <p className="text-xs text-slate-400 mt-2">Data mode: {dataMode}</p>
         </div>
 
         {/* Workspaces Info */}
@@ -89,6 +96,10 @@ export default function HomePage() {
         </h3>
 
         <div className="space-y-3">
+          {loading && (
+            <div className="text-sm text-slate-500">Loading projects from API...</div>
+          )}
+
           {state.projects.map((project) => (
             <Link
               key={project.id}
