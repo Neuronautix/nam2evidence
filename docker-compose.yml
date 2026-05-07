@@ -28,6 +28,7 @@ services:
       APP_SECRET: ${APP_SECRET:-dev_secret_replace_in_production}
       DATABASE_URL: "postgresql://namo_user:namo_password@db:5432/namo_ind_mapper?serverVersion=16&charset=utf8"
       CORS_ALLOW_ORIGIN: "^https?://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?$"
+      DEFAULT_URI: "http://localhost:8080"
     ports:
       - "8080:80"
     depends_on:

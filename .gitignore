@@ -12,6 +12,7 @@ dist/
 .env
 .env.local
 .env.*.local
+!api/.env
 
 # Runtime
 var/

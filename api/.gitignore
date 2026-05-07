@@ -1,6 +1,7 @@
 vendor/
 var/
 .env
+!/.env
 *.cache
 
 ###> symfony/framework-bundle ###
