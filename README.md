@@ -70,6 +70,9 @@ cd NAMO-to-IND-Mapper
 # Copy and edit the API environment file
 cp api/.env.example api/.env
 
+# (Optional) Copy the frontend env example if you want to override the API URL
+cp frontend/.env.example frontend/.env.local
+
 # Start all services
 docker compose up --build
 
@@ -78,6 +81,21 @@ docker compose exec -T api php bin/console doctrine:migrations:migrate --no-inte
 ```
 
 The frontend runs in API mode by default via `NEXT_PUBLIC_DATA_MODE=api`.
+
+### Environment variables
+
+| File | Purpose |
+|---|---|
+| `api/.env.example` | Template for Symfony env vars (`APP_ENV`, `APP_SECRET`, `DATABASE_URL`, `CORS_ALLOW_ORIGIN`). Copy to `api/.env`. |
+| `frontend/.env.example` | Template for Next.js env vars (`NEXT_PUBLIC_API_URL`). Copy to `frontend/.env.local`. |
+
+`docker-compose.yml` reads `APP_SECRET` from the host environment when set, falling back to a development default. To override it for production:
+
+```bash
+APP_SECRET="$(openssl rand -hex 32)" docker compose up -d
+```
+
+For hot-reload frontend development inside Docker, copy `docker-compose.override.yml.example` to `docker-compose.override.yml` — Compose will merge it automatically.
 
 | Service | URL |
 |---|---|

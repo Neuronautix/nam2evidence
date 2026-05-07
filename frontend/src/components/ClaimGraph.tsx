@@ -199,25 +199,44 @@ export default function ClaimGraph({ nodes, edges, onStatusChange }: ClaimGraphP
         <div className="mt-6 card p-4">
           <h4 className="text-sm font-semibold text-slate-700 mb-3">Evidence Links ({edges.length})</h4>
           <div className="space-y-1.5">
-            {edges.map((edge, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
-                <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded">{edge.from_claim_id}</span>
-                <span
-                  className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-                    edge.relationship === 'supports'
-                      ? 'bg-green-100 text-green-700'
-                      : edge.relationship === 'refutes'
-                      ? 'bg-red-100 text-red-700'
-                      : edge.relationship === 'qualifies'
-                      ? 'bg-amber-100 text-amber-700'
-                      : 'bg-blue-100 text-blue-700'
-                  }`}
-                >
-                  {edge.relationship} →
-                </span>
-                <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded">{edge.to_claim_id}</span>
-              </div>
-            ))}
+            {edges.map((edge, i) => {
+              let relClasses: string;
+              switch (edge.relationship) {
+                case 'supports':
+                  relClasses = 'bg-green-100 text-green-700';
+                  break;
+                case 'contradicts':
+                case 'refutes':
+                  relClasses = 'bg-red-100 text-red-700';
+                  break;
+                case 'qualifies':
+                case 'limited_by':
+                  relClasses = 'bg-amber-100 text-amber-700';
+                  break;
+                case 'depends_on':
+                case 'requires':
+                case 'derived_from':
+                  relClasses = 'bg-blue-100 text-blue-700';
+                  break;
+                case 'conforms_to':
+                  relClasses = 'bg-teal-100 text-teal-700';
+                  break;
+                case 'maps_to_ectd_section':
+                  relClasses = 'bg-violet-100 text-violet-700';
+                  break;
+                default:
+                  relClasses = 'bg-slate-100 text-slate-700';
+              }
+              return (
+                <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
+                  <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded">{edge.from_claim_id}</span>
+                  <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${relClasses}`}>
+                    {edge.relationship} →
+                  </span>
+                  <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded">{edge.to_claim_id}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

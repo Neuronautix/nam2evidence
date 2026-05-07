@@ -79,6 +79,11 @@ class ECTDMapping
     #[Groups(['read', 'write'])]
     private ?string $justification = null;
 
+    /** Reviewer confidence in the eCTD section assignment: low | medium | high | null */
+    #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Choice(choices: ['low', 'medium', 'high', null])]
+    private ?string $confidence = null;
+
     public function __construct()
     {
     }
@@ -100,6 +105,8 @@ class ECTDMapping
     public function setNotes(?string $v): static { $this->notes = $v; return $this; }
     public function getJustification(): ?string { return $this->justification; }
     public function setJustification(?string $v): static { $this->justification = $v; return $this; }
+    public function getConfidence(): ?string { return $this->confidence; }
+    public function setConfidence(?string $v): static { $this->confidence = $v; return $this; }
 
     #[Assert\Callback]
     public function validateProjectConsistency(ExecutionContextInterface $context): void

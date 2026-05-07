@@ -10,6 +10,7 @@ use App\Entity\EvidenceItem;
 use App\Entity\ExportPackage;
 use App\Entity\NAMStudy;
 use App\Entity\Project;
+use App\Service\Export\ExportGate;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,11 +45,11 @@ class ExportController extends AbstractController
             return $this->json(['error' => 'Project not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $pendingIds = $this->getPendingClaimIds($project);
-        if (count($pendingIds) > 0) {
+        $allClaims = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
+        if (ExportGate::isBlocked($allClaims)) {
             return $this->json([
                 'error'       => 'Export blocked: human review required',
-                'pending_ids' => $pendingIds,
+                'pending_ids' => ExportGate::blockingClaimIds($allClaims),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

@@ -100,6 +100,11 @@ class ContextOfUseCard
     #[Groups(['read', 'write'])]
     private string $regulatoryConfidenceLevel = 'exploratory';
 
+    /** draft | validated | reviewer_pending | approved | rejected */
+    #[ORM\Column(length: 30, options: ['default' => 'draft'])]
+    #[Assert\Choice(choices: ['draft', 'validated', 'reviewer_pending', 'approved', 'rejected'])]
+    private string $reviewStatus = 'draft';
+
     #[ORM\Column(length: 20)]
     #[Groups(['read', 'write'])]
     private string $version = '1.0';
@@ -151,6 +156,8 @@ class ContextOfUseCard
     public function setAcceptanceCriteria(array $v): static { $this->acceptanceCriteria = $v; return $this; }
     public function getRegulatoryConfidenceLevel(): string { return $this->regulatoryConfidenceLevel; }
     public function setRegulatoryConfidenceLevel(string $v): static { $this->regulatoryConfidenceLevel = $v; return $this; }
+    public function getReviewStatus(): string { return $this->reviewStatus; }
+    public function setReviewStatus(string $v): static { $this->reviewStatus = $v; return $this; }
     public function getVersion(): string { return $this->version; }
     public function setVersion(string $v): static { $this->version = $v; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
