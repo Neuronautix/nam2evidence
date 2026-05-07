@@ -61,6 +61,12 @@ jobs:
     defaults:
       run:
         working-directory: api
+    env:
+      APP_ENV: test
+      APP_SECRET: 717a8116f8a7e7a4d24e939c63cef5ea
+      DATABASE_URL: "postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+      DEFAULT_URI: "http://localhost"
+      CORS_ALLOW_ORIGIN: "^https?://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?$"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
