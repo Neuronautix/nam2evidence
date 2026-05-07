@@ -43,6 +43,7 @@ services:
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: "http://localhost:8080"
+      NEXT_PUBLIC_DATA_MODE: "api"
     ports:
       - "3000:3000"
     volumes:

@@ -13,6 +13,7 @@ use App\Repository\NAMStudyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,7 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: NAMStudyRepository::class)]
 #[ORM\Table(name: 'nam_studies')]
 #[ApiResource(
-    operations: [new GetCollection(), new Post(), new Get(), new Put()]
+    operations: [new GetCollection(), new Post(), new Get(), new Put()],
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
 )]
 class NAMStudy
 {
@@ -33,44 +36,55 @@ class NAMStudy
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.ulid_generator')]
+    #[Groups(['read'])]
     private Ulid $id;
 
     #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank]
+    #[Groups(['read', 'write'])]
     private string $studyId = '';
 
     #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private Project $project;
 
     #[ORM\ManyToOne(targetEntity: ContextOfUseCard::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read', 'write'])]
     private ContextOfUseCard $contextOfUse;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['read', 'write'])]
     private string $title = '';
 
     /** JSONB: NAMO model system classification (class, species, cell type, vendor, …) */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $modelSystem = [];
 
     /** JSONB: concentrations, duration, replicates, reference compounds, … */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $experimentalDesign = [];
 
     /** JSONB: endpoints, instrument, software, … */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $assayMetadata = [];
 
     /** JSONB: TC50, NOAEL, safety multiples, key numerical results */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $dataOutputs = [];
 
     /** JSONB: study director, facility, ELN references, SOP IDs, git hashes */
     #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
     private array $provenance = [];
 
     #[ORM\Column]
+    #[Groups(['read'])]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\OneToMany(mappedBy: 'study', targetEntity: EvidenceItem::class, cascade: ['persist', 'remove'])]
@@ -78,7 +92,6 @@ class NAMStudy
 
     public function __construct()
     {
-        $this->id = new Ulid();
         $this->createdAt = new \DateTimeImmutable();
         $this->evidenceItems = new ArrayCollection();
     }
