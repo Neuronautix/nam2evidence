@@ -72,30 +72,27 @@ class WorkspaceController extends AbstractController
         $studies = $this->em->getRepository(NAMStudy::class)->findBy(['project' => $project], ['createdAt' => 'DESC']);
         $claims = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
 
-        $claimById = [];
+        $claimEdgesById = [];
         foreach ($claims as $claim) {
-            $claimById[(string) $claim->getId()] = $claim;
+            foreach ($this->em->getRepository(ClaimEdge::class)->findBy(['fromClaim' => $claim]) as $edge) {
+                $claimEdgesById[(string) $edge->getId()] = $edge;
+            }
+            foreach ($this->em->getRepository(ClaimEdge::class)->findBy(['toClaim' => $claim]) as $edge) {
+                $claimEdgesById[(string) $edge->getId()] = $edge;
+            }
         }
 
-        $claimEdges = $this->em->createQueryBuilder()
-            ->select('e')
-            ->from(ClaimEdge::class, 'e')
-            ->leftJoin('e.fromClaim', 'f')
-            ->leftJoin('e.toClaim', 't')
-            ->where('f.project = :project OR t.project = :project')
-            ->setParameter('project', $project)
-            ->getQuery()
-            ->getResult();
-
-        $mappings = $this->em->createQueryBuilder()
-            ->select('m')
-            ->from(ECTDMapping::class, 'm')
-            ->leftJoin('m.study', 's')
-            ->leftJoin('m.claim', 'c')
-            ->where('s.project = :project OR c.project = :project')
-            ->setParameter('project', $project)
-            ->getQuery()
-            ->getResult();
+        $mappingsById = [];
+        foreach ($studies as $study) {
+            foreach ($this->em->getRepository(ECTDMapping::class)->findBy(['study' => $study]) as $mapping) {
+                $mappingsById[(string) $mapping->getId()] = $mapping;
+            }
+        }
+        foreach ($claims as $claim) {
+            foreach ($this->em->getRepository(ECTDMapping::class)->findBy(['claim' => $claim]) as $mapping) {
+                $mappingsById[(string) $mapping->getId()] = $mapping;
+            }
+        }
 
         $evidenceItems = [];
         foreach ($studies as $study) {
@@ -110,8 +107,8 @@ class WorkspaceController extends AbstractController
             'nam_studies' => array_map($this->normalise(...), $studies),
             'evidence_items' => array_map($this->normalise(...), $evidenceItems),
             'claim_nodes' => array_map($this->normalise(...), $claims),
-            'claim_edges' => array_map($this->normalise(...), $claimEdges),
-            'ectd_mappings' => array_map($this->normalise(...), $mappings),
+            'claim_edges' => array_map($this->normalise(...), array_values($claimEdgesById)),
+            'ectd_mappings' => array_map($this->normalise(...), array_values($mappingsById)),
         ]);
     }
 
@@ -221,7 +218,7 @@ class WorkspaceController extends AbstractController
     private function findProject(string $id): ?Project
     {
         try {
-            return $this->em->find(Project::class, Ulid::fromString($id));
+            return $this->em->find(Project::class, Ulid::fromString($id)->toRfc4122());
         } catch (\Throwable) {
             return null;
         }

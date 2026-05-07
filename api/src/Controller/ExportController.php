@@ -45,7 +45,7 @@ class ExportController extends AbstractController
             return $this->json(['error' => 'Project not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $allClaims = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
+        $allClaims = $this->findClaims($project);
         if (ExportGate::isBlocked($allClaims)) {
             return $this->json([
                 'error'       => 'Export blocked: human review required',
@@ -121,17 +121,17 @@ class ExportController extends AbstractController
         }, $packages));
     }
 
-    /** Normalise an entity to a plain array using the Symfony Serializer. */
-    private function normalise(object $entity): array
-    {
-        $json = $this->serializer->serialize($entity, 'json', ['groups' => ['read']]);
-        return json_decode($json, true) ?? [];
-    }
-
     private function buildPayload(Project $project): array
     {
-        $studies = $this->em->getRepository(NAMStudy::class)->findBy(['project' => $project]);
-        $claimNodes = $this->em->getRepository(ClaimNode::class)->findBy(['project' => $project]);
+        $projectId = $project->getId()->toRfc4122();
+        $studies = $this->em->createQueryBuilder()
+            ->select('s')
+            ->from(NAMStudy::class, 's')
+            ->where('IDENTITY(s.project) = :projectId')
+            ->setParameter('projectId', $projectId)
+            ->getQuery()
+            ->getResult();
+        $claimNodes = $this->findClaims($project);
         $evidenceItems = count($studies) > 0
             ? $this->em->getRepository(EvidenceItem::class)->findBy(['study' => $studies])
             : [];
@@ -140,8 +140,8 @@ class ExportController extends AbstractController
             ->from(ECTDMapping::class, 'm')
             ->leftJoin('m.study', 's', Join::WITH)
             ->leftJoin('m.claim', 'c', Join::WITH)
-            ->where('s.project = :project OR c.project = :project')
-            ->setParameter('project', $project)
+            ->where('IDENTITY(s.project) = :projectId OR IDENTITY(c.project) = :projectId')
+            ->setParameter('projectId', $projectId)
             ->getQuery()
             ->getResult();
 
@@ -150,11 +150,99 @@ class ExportController extends AbstractController
             'schema_version' => '1.0.0',
             'tool' => 'NAMO-to-IND Mapper API',
             'exported_at' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
-            'project' => $this->normalise($project),
-            'nam_studies' => array_map($this->normalise(...), $studies),
-            'evidence_items' => array_map($this->normalise(...), $evidenceItems),
-            'claim_nodes' => array_map($this->normalise(...), $claimNodes),
-            'ectd_mappings' => array_map($this->normalise(...), $ectdMappings),
+            'project' => $this->normaliseProject($project),
+            'nam_studies' => array_map($this->normaliseStudy(...), $studies),
+            'evidence_items' => array_map($this->normaliseEvidence(...), $evidenceItems),
+            'claim_nodes' => array_map($this->normaliseClaim(...), $claimNodes),
+            'ectd_mappings' => array_map($this->normaliseMapping(...), $ectdMappings),
+        ];
+    }
+
+    private function normaliseProject(Project $project): array
+    {
+        return [
+            'id' => $project->getId()->toBase32(),
+            'name' => $project->getName(),
+            'description' => $project->getDescription(),
+            'drugName' => $project->getDrugName(),
+            'sponsor' => $project->getSponsor(),
+            'reviewStatus' => $project->getReviewStatus(),
+            'createdAt' => $project->getCreatedAt()->format(\DateTimeInterface::ATOM),
+            'updatedAt' => $project->getUpdatedAt()->format(\DateTimeInterface::ATOM),
+        ];
+    }
+
+    private function normaliseStudy(NAMStudy $study): array
+    {
+        return [
+            'id' => $study->getId()->toBase32(),
+            'studyId' => $study->getStudyId(),
+            'projectId' => $study->getProject()->getId()->toBase32(),
+            'contextOfUseId' => $study->getContextOfUse()->getCouId(),
+            'title' => $study->getTitle(),
+            'modelSystem' => $study->getModelSystem(),
+            'experimentalDesign' => $study->getExperimentalDesign(),
+            'assayMetadata' => $study->getAssayMetadata(),
+            'dataOutputs' => $study->getDataOutputs(),
+            'provenance' => $study->getProvenance(),
+            'createdAt' => $study->getCreatedAt()->format(\DateTimeInterface::ATOM),
+        ];
+    }
+
+    private function normaliseEvidence(EvidenceItem $item): array
+    {
+        return [
+            'id' => $item->getId()->toBase32(),
+            'evidenceId' => $item->getEvidenceId(),
+            'studyId' => $item->getStudy()->getStudyId(),
+            'domain' => $item->getDomain(),
+            'question' => $item->getQuestion(),
+            'evidenceType' => $item->getEvidenceType(),
+            'status' => $item->getStatus(),
+            'notes' => $item->getNotes(),
+            'supportingData' => $item->getSupportingData(),
+            'metricValue' => $item->getMetricValue(),
+            'threshold' => $item->getThreshold(),
+            'passFail' => $item->getPassFail(),
+        ];
+    }
+
+    private function normaliseClaim(ClaimNode $claim): array
+    {
+        return [
+            'id' => $claim->getId()->toBase32(),
+            'claimId' => $claim->getClaimId(),
+            'projectId' => $claim->getProject()->getId()->toBase32(),
+            'claimText' => $claim->getClaimText(),
+            'nodeType' => $claim->getNodeType(),
+            'claimType' => $claim->getClaimType(),
+            'contextOfUseId' => $claim->getContextOfUse()->getCouId(),
+            'confidence' => $claim->getConfidence(),
+            'supportingEvidence' => $claim->getSupportingEvidence(),
+            'contradictoryEvidence' => $claim->getContradictoryEvidence(),
+            'limitations' => $claim->getLimitations(),
+            'ectdTargetSections' => $claim->getEctdTargetSections(),
+            'reviewStatus' => $claim->getReviewStatus(),
+            'parentClaimId' => $claim->getParentClaim()?->getClaimId(),
+            'reviewedAt' => $claim->getReviewedAt()?->format(\DateTimeInterface::ATOM),
+            'reviewedBy' => $claim->getReviewedBy(),
+            'reviewReason' => $claim->getReviewReason(),
+        ];
+    }
+
+    private function normaliseMapping(ECTDMapping $mapping): array
+    {
+        return [
+            'id' => $mapping->getId()->toBase32(),
+            'mappingId' => $mapping->getMappingId(),
+            'studyId' => $mapping->getStudy()?->getStudyId(),
+            'claimId' => $mapping->getClaim()?->getClaimId(),
+            'evidenceType' => $mapping->getEvidenceType(),
+            'ectdSection' => $mapping->getEctdSection(),
+            'ectdTitle' => $mapping->getEctdTitle(),
+            'notes' => $mapping->getNotes(),
+            'justification' => $mapping->getJustification(),
+            'confidence' => $mapping->getConfidence(),
         ];
     }
 
@@ -171,17 +259,38 @@ class ExportController extends AbstractController
     private function findProject(string $id): ?Project
     {
         try {
-            return $this->em->find(Project::class, Ulid::fromString($id));
+            return $this->em->find(Project::class, Ulid::fromString($id)->toRfc4122());
         } catch (\Throwable) {
             return null;
         }
     }
 
+    /**
+     * @return list<ClaimNode>
+     */
+    private function findClaims(Project $project): array
+    {
+        return $this->em->createQueryBuilder()
+            ->select('c')
+            ->from(ClaimNode::class, 'c')
+            ->where('IDENTITY(c.project) = :projectId')
+            ->setParameter('projectId', $project->getId()->toRfc4122())
+            ->getQuery()
+            ->getResult();
+    }
+
     /** @return string[] */
     private function getPendingClaimIds(Project $project): array
     {
-        $pendingClaims = $this->em->getRepository(ClaimNode::class)
-            ->findBy(['project' => $project, 'reviewStatus' => 'human_review_required']);
+        $pendingClaims = $this->em->createQueryBuilder()
+            ->select('c')
+            ->from(ClaimNode::class, 'c')
+            ->where('IDENTITY(c.project) = :projectId')
+            ->andWhere('c.reviewStatus = :status')
+            ->setParameter('projectId', $project->getId()->toRfc4122())
+            ->setParameter('status', 'human_review_required')
+            ->getQuery()
+            ->getResult();
 
         return array_values(array_map(fn(ClaimNode $claim) => $claim->getClaimId(), $pendingClaims));
     }

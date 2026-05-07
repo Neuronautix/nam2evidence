@@ -111,6 +111,18 @@ After first startup and migration:
 - Verify backend health by opening: http://localhost:8080/api/v1/projects
 - Expected response in a fresh environment: `[]`
 
+To load the canonical mock project into the Docker database:
+
+```bash
+docker compose exec -T api php bin/console app:load-demo-data --force
+```
+
+If Symfony cache files were created with mixed host/container ownership, clear the generated cache from inside the container first:
+
+```bash
+docker compose exec -T --user root api sh -lc 'rm -rf var/cache/* && php bin/console app:load-demo-data --force'
+```
+
 ### Run the frontend locally (standalone demo)
 
 The frontend ships with complete demo data (liver organoid hepatotoxicity use case) and works without a running backend.
@@ -219,6 +231,12 @@ The application ships with a pre-populated demo project covering:
 - **EVID-MATRIX-001** — 15 evidence items across all eight validation domains
 - **CLAIM-GRAPH-001** — 5 hierarchical claims with confidence levels from exploratory to decision-informing
 - **ECTD-MAP-001** — 5 document mappings targeting sections 4.2.3.7.3, 4.2.3.2, 2.6.6, and 2.6.2
+
+For API-backed testing, reload the same dataset at any time:
+
+```bash
+docker compose exec -T api php bin/console app:load-demo-data --force
+```
 
 ---
 

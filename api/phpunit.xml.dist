@@ -32,7 +32,7 @@
         <server name="KERNEL_CLASS" value="App\Kernel"/>
 
         <!-- ###+ symfony/framework-bundle ### -->
-        <env name="APP_ENV" value="test"/>
+        <env name="APP_ENV" value="test" force="true"/>
         <env name="APP_SECRET" value="717a8116f8a7e7a4d24e939c63cef5ea"/>
         <!-- ###- symfony/framework-bundle ### -->
 

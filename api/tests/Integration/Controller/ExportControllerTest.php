@@ -70,6 +70,10 @@ final class ExportControllerTest extends WebTestCase
             (string) $this->client->getResponse()->headers->get('Content-Disposition')
         );
         self::assertStringContainsString(
+            'filename=',
+            (string) $this->client->getResponse()->headers->get('Content-Disposition')
+        );
+        self::assertStringContainsString(
             $expectedBodyFragment,
             (string) $this->client->getResponse()->getContent()
         );

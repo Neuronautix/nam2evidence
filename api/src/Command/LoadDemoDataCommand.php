@@ -676,7 +676,7 @@ final class LoadDemoDataCommand extends Command
                 . 'summaries to provide reviewers context.',
             ],
             [
-                'ECTD-MAP-005', $study, null,
+                'ECTD-MAP-005', null, $claimsByCode['CLAIM-003'] ?? null,
                 'Validation evidence matrix (CSV)', '4.2.3.7.3',
                 'Other in vitro studies – supplementary validation data',
                 'Validation evidence matrix (EVID-MATRIX-001) to be included as a supporting file '
