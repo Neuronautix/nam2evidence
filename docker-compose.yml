@@ -39,6 +39,8 @@ services:
         condition: service_healthy
     volumes:
       - ./api:/var/www/api:cached
+      - ./standards:/var/www/standards:ro
+      - ./demo:/var/www/demo:ro
       - api_vendor:/var/www/api/vendor
 
   validator:
