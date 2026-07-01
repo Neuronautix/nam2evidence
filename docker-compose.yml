@@ -3,15 +3,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: namo_ind_mapper
+      POSTGRES_DB: nam2evidence
       POSTGRES_USER: namo_user
       POSTGRES_PASSWORD: namo_password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - nam2evidence_postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U namo_user -d namo_ind_mapper"]
+      test: ["CMD-SHELL", "pg_isready -U namo_user -d nam2evidence"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,7 +26,7 @@ services:
       # Override APP_SECRET via the host environment in production deployments,
       # e.g. `APP_SECRET=$(openssl rand -hex 32) docker compose up -d`.
       APP_SECRET: ${APP_SECRET:-dev_secret_replace_in_production}
-      DATABASE_URL: "postgresql://namo_user:namo_password@db:5432/namo_ind_mapper?serverVersion=16&charset=utf8"
+      DATABASE_URL: "postgresql://namo_user:namo_password@db:5432/nam2evidence?serverVersion=16&charset=utf8"
       CORS_ALLOW_ORIGIN: "^https?://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?$"
       DEFAULT_URI: "http://localhost:8080"
       # Optional pyshacl + pyarrow sidecar for SHACL validation and native Parquet.
@@ -73,5 +73,5 @@ services:
         condition: service_started
 
 volumes:
-  postgres_data:
+  nam2evidence_postgres_data:
   api_vendor:

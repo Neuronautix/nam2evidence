@@ -1,6 +1,6 @@
 # Changelog — NAM-CORE standardization layer
 
-This release refactors the NAMO-to-IND Mapper from a regulatory evidence-packaging
+This release refactors nam2evidence from a regulatory evidence-packaging
 prototype into a modular, FAIR-by-design, ontology-linked, validator-driven NAM
 standardization toolkit. **It is additive**: the five existing workspaces, the demo, the
 existing entities/routes/exports, and TypeScript strictness are all preserved.

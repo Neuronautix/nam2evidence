@@ -1,6 +1,6 @@
 {
-    "name": "neuronautix/namo-to-ind-mapper-api",
-    "description": "Symfony/API Platform backend for NAMO-to-IND Mapper",
+    "name": "neuronautix/nam2evidence-api",
+    "description": "Symfony/API Platform backend for nam2evidence",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
