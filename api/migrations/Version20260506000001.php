@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Initial schema for NAMO-to-IND Mapper.
+ * Initial schema for nam2evidence.
  *
  * Tables:
  *   projects
@@ -27,7 +27,7 @@ final class Version20260506000001 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Initial NAMO-to-IND Mapper schema';
+        return 'Initial nam2evidence schema';
     }
 
     public function up(Schema $schema): void

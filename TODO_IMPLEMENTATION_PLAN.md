@@ -1,4 +1,4 @@
-# NAMO-to-IND Mapper - Precise Implementation Plan (Todo)
+# nam2evidence - Precise Implementation Plan (Todo)
 
 Last updated: 2026-05-06
 Planning source: initial_prompt.md + current repository state

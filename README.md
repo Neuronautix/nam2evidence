@@ -286,6 +286,18 @@ create/migrate/phpunit steps, and builds the frontend on every push to a PR.
 
 ---
 
+## Open Source
+
+nam2evidence is public open source software licensed under the GNU General
+Public License v3.0 or later (`GPL-3.0-or-later`). See [LICENSE](LICENSE),
+[COPYING](COPYING), and [NOTICE](NOTICE).
+
+Contributions are welcome under the same license. See
+[CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md),
+[SECURITY.md](SECURITY.md), and [SUPPORT.md](SUPPORT.md).
+
+---
+
 ## Documentation
 
 | Doc                                                             | Contents                                                                                                  |

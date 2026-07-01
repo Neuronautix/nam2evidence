@@ -2,7 +2,7 @@
     "name": "neuronautix/nam2evidence-api",
     "description": "Symfony/API Platform backend for nam2evidence",
     "type": "project",
-    "license": "proprietary",
+    "license": "GPL-3.0-or-later",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {

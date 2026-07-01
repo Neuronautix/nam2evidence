@@ -1,6 +1,6 @@
 # Regulatory Positioning
 
-This document states, explicitly and conservatively, what the NAMO-to-IND Mapper
+This document states, explicitly and conservatively, what the nam2evidence
 NAM-CORE toolkit **is** and — just as importantly — what it **is not**. Read it
 before drawing any conclusion from the tool's outputs.
 

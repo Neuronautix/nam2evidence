@@ -56,7 +56,7 @@ export default function Sidebar({ projectId, projectName }: SidebarProps) {
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <FlaskConical className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-semibold text-white">NAMO Mapper</span>
+          <span className="text-sm font-semibold text-white">nam2evidence</span>
         </div>
         <Link
           href="/"
@@ -101,7 +101,7 @@ export default function Sidebar({ projectId, projectName }: SidebarProps) {
 
       {/* Footer */}
       <div className="px-4 py-4 border-t border-slate-700">
-        <p className="text-xs text-slate-500 text-center">NAM Evidence Packaging Tool</p>
+        <p className="text-xs text-slate-500 text-center">NAM Evidence Standardization Tool</p>
       </div>
     </aside>
   );

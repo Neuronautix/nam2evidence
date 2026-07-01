@@ -1,4 +1,4 @@
-# NAMO-to-IND Mapper: Implementation Planning Brief
+# nam2evidence: Implementation Planning Brief
 
 ## Current objective
 

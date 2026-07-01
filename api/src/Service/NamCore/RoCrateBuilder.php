@@ -54,7 +54,7 @@ final class RoCrateBuilder
             [
                 '@id'   => '#nam-core-toolkit',
                 '@type' => 'SoftwareApplication',
-                'name'  => 'NAMO-to-IND Mapper (NAM-CORE standardization toolkit)',
+                'name'  => 'nam2evidence (NAM-CORE standardization toolkit)',
                 'softwareVersion' => ProjectGraphBuilder::SCHEMA_VERSION,
             ],
             ...$partEntities,

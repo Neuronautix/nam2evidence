@@ -148,7 +148,7 @@ class ExportController extends AbstractController
         return [
             'package_id' => 'PKG-' . (string) new Ulid(),
             'schema_version' => '1.0.0',
-            'tool' => 'NAMO-to-IND Mapper API',
+            'tool' => 'nam2evidence API',
             'exported_at' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
             'project' => $this->normaliseProject($project),
             'nam_studies' => array_map($this->normaliseStudy(...), $studies),

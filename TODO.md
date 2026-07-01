@@ -1,6 +1,6 @@
 # NAM-CORE Standardization Toolkit — Implementation Plan
 
-Transform the NAMO-to-IND Mapper from a regulatory evidence-packaging prototype into a
+Transform nam2evidence from a regulatory evidence-packaging prototype into a
 modular, FAIR-by-design, ontology-linked, validator-driven NAM standardization toolkit —
 **without breaking the existing five workspaces or demo mode**.
 

@@ -3,7 +3,7 @@ import './globals.css';
 import { StoreProvider } from '@/lib/store';
 
 export const metadata: Metadata = {
-  title: 'NAMO-to-IND Mapper',
+  title: 'nam2evidence',
   description: 'Context-of-use-driven evidence packaging tool for NAM-derived nonclinical data',
 };
 

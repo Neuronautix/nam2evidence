@@ -1,0 +1,13 @@
+nam2evidence
+Copyright (C) 2026 Neuronautix and contributors
+
+nam2evidence is distributed under the GNU General Public License v3.0 or later.
+See LICENSE and COPYING.
+
+This repository includes application code, documentation, standards fixtures,
+and demo data for a technical proof-of-concept. Third-party dependencies remain
+under their own licenses as declared in their package metadata and lock files.
+
+NAM-CORE materials in this repository are proof-of-concept implementation
+artifacts for standardizing NAM-derived nonclinical data. They are not official
+regulatory standards and do not imply acceptance by any regulatory authority.
