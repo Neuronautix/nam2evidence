@@ -84,6 +84,53 @@ class ECTDMapping
     #[Assert\Choice(choices: ['low', 'medium', 'high', null])]
     private ?string $confidence = null;
 
+    // ── Strengthened structured placement fields (NAM-CORE) ──────────────────
+
+    /**
+     * Standing caveat surfaced on every eCTD mapping. NAM evidence placement is a
+     * structured proposal, not regulatory advice.
+     */
+    public const PLACEMENT_WARNING = 'NAM evidence placement depends on context of use and regulatory strategy. This mapping is a structured proposal, not regulatory advice.';
+
+    /** eCTD module, e.g. "4" or "2". */
+    #[ORM\Column(length: 10, nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $module = null;
+
+    /** e.g. "study report", "written summary", "tabulated summary", "supporting file". */
+    #[ORM\Column(length: 120, nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $documentType = null;
+
+    /** Which packaged component this placement refers to, e.g. "endpoint_measurements.csv". */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $evidencePackageComponent = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $placementRationale = null;
+
+    /** @var string[] */
+    #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
+    private array $claimIdsSupported = [];
+
+    /** @var string[] */
+    #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
+    private array $validationEvidenceIdsSupported = [];
+
+    /** proposed | accepted | rejected | null */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Choice(choices: ['proposed', 'accepted', 'rejected', null])]
+    #[Groups(['read', 'write'])]
+    private ?string $reviewerStatus = 'proposed';
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $caveat = null;
+
     public function __construct()
     {
     }
@@ -107,6 +154,22 @@ class ECTDMapping
     public function setJustification(?string $v): static { $this->justification = $v; return $this; }
     public function getConfidence(): ?string { return $this->confidence; }
     public function setConfidence(?string $v): static { $this->confidence = $v; return $this; }
+    public function getModule(): ?string { return $this->module; }
+    public function setModule(?string $v): static { $this->module = $v; return $this; }
+    public function getDocumentType(): ?string { return $this->documentType; }
+    public function setDocumentType(?string $v): static { $this->documentType = $v; return $this; }
+    public function getEvidencePackageComponent(): ?string { return $this->evidencePackageComponent; }
+    public function setEvidencePackageComponent(?string $v): static { $this->evidencePackageComponent = $v; return $this; }
+    public function getPlacementRationale(): ?string { return $this->placementRationale; }
+    public function setPlacementRationale(?string $v): static { $this->placementRationale = $v; return $this; }
+    public function getClaimIdsSupported(): array { return $this->claimIdsSupported; }
+    public function setClaimIdsSupported(array $v): static { $this->claimIdsSupported = $v; return $this; }
+    public function getValidationEvidenceIdsSupported(): array { return $this->validationEvidenceIdsSupported; }
+    public function setValidationEvidenceIdsSupported(array $v): static { $this->validationEvidenceIdsSupported = $v; return $this; }
+    public function getReviewerStatus(): ?string { return $this->reviewerStatus; }
+    public function setReviewerStatus(?string $v): static { $this->reviewerStatus = $v; return $this; }
+    public function getCaveat(): ?string { return $this->caveat; }
+    public function setCaveat(?string $v): static { $this->caveat = $v; return $this; }
 
     #[Assert\Callback]
     public function validateProjectConsistency(ExecutionContextInterface $context): void

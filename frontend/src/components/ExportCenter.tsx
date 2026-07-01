@@ -181,7 +181,7 @@ export default function ExportCenter(props: ExportCenterProps) {
                 className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 hover:border-blue-400 transition-colors"
               >
                 <div className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4.5 h-4.5 text-slate-600" />
+                  <Icon className="w-4 h-4 text-slate-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">

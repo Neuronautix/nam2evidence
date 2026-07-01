@@ -696,7 +696,13 @@ final class LoadDemoDataCommand extends Command
                 ->setEctdSection($section)
                 ->setEctdTitle($title)
                 ->setNotes($notes)
-                ->setJustification($justification);
+                ->setJustification($justification)
+                ->setModule(explode('.', $section)[0])
+                ->setDocumentType(str_starts_with($section, '2.') ? 'written summary' : 'study report / supporting file')
+                ->setPlacementRationale($justification)
+                ->setClaimIdsSupported($claimRef !== null ? [$claimRef->getClaimId()] : [])
+                ->setReviewerStatus('proposed')
+                ->setCaveat(ECTDMapping::PLACEMENT_WARNING);
             $out[] = $mapping;
         }
         return $out;
