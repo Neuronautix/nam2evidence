@@ -52,8 +52,32 @@ falls back to CSV when the Parquet engine is absent.
 
 ## Quick start (Docker Compose)
 
-With [Castor](https://castor.jolicode.com/), the full Docker startup and demo
-initialization flow is:
+Install [Castor](https://castor.jolicode.com/) once, then use it to start the
+full Docker stack and initialize demo data.
+
+Windows / PowerShell:
+
+```powershell
+# Castor's current Windows PHAR requires PHP 8.4.1+.
+# This installs PHP 8.4 with winget when available; if winget's PHP manifest is
+# stale, it downloads the official PHP 8.4 latest ZIP into %USERPROFILE%\.local\bin.
+.\scripts\install-castor.ps1 -InstallPhpWithWinget
+
+# If PHP 8.4.1+ is already installed, this is enough:
+.\scripts\install-castor.ps1
+
+# Open a new PowerShell session if PATH was updated, then verify:
+castor --version
+```
+
+Linux / macOS:
+
+```bash
+curl "https://castor.jolicode.com/install" | bash -s -- --static
+castor --version
+```
+
+Start the application:
 
 ```bash
 castor start
@@ -63,6 +87,14 @@ To load the resolved demo state instead:
 
 ```bash
 castor start --corrected
+```
+
+If you do not want to install Castor globally on Windows, the repo-local
+PowerShell fallback runs the same Docker flow:
+
+```powershell
+.\start.ps1
+.\start.ps1 -Corrected
 ```
 
 The equivalent manual Docker commands are:

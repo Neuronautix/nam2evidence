@@ -18,6 +18,7 @@ dist/
 var/
 *.log
 *.cache
+.castor.stub.php
 
 # IDE
 .idea/

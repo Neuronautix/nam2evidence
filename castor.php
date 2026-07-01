@@ -2,14 +2,13 @@
 
 use Castor\Attribute\AsOption;
 use Castor\Attribute\AsTask;
-use Symfony\Component\Console\Input\InputOption;
 
 use function Castor\io;
 use function Castor\run;
 
 #[AsTask(description: 'Start the Docker Compose stack and initialize the demo data.')]
 function start(
-    #[AsOption(description: 'Load the resolved NAM-CORE demo state.', mode: InputOption::VALUE_NONE)]
+    #[AsOption(description: 'Load the resolved NAM-CORE demo state.')]
     bool $corrected = false,
 ): void {
     io()->title('Starting nam2evidence');
