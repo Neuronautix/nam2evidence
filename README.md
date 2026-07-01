@@ -332,6 +332,15 @@ Contributions are welcome under the same license. See
 
 ## Documentation
 
+The user-facing Sphinx documentation lives in `docs/`. To build it locally:
+
+```bash
+python -m pip install -r docs/requirements.txt
+python -m sphinx -b html docs docs/_build/html
+```
+
+Open `docs/_build/html/index.html` after the build completes.
+
 | Doc                                                             | Contents                                                                                                  |
 | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | [docs/NAM_CORE_SCHEMA.md](docs/NAM_CORE_SCHEMA.md)               | NAM-CORE v0.1 schema: shared trait, every entity, extension strategy,`EndpointMeasurement` field list.  |
