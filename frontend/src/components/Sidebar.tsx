@@ -29,17 +29,17 @@ interface SidebarProps {
 
 const navItems = [
   { href: '', label: 'Overview', icon: Home },
+  { href: '/endpoints', label: 'Endpoint Data', icon: Table },
+  { href: '/ontology', label: 'Ontology', icon: Network },
+  { href: '/semantic-validation', label: 'Semantic Validation', icon: ShieldCheck },
+  { href: '/readiness', label: 'Readiness', icon: Gauge },
+  { href: '/provenance', label: 'Provenance', icon: Workflow },
   { href: '/cou', label: 'Context of Use', icon: FileText },
   { href: '/study', label: 'NAM Study', icon: Microscope },
   { href: '/import', label: 'Import NAMO', icon: Upload },
   { href: '/validation', label: 'Validation Matrix', icon: CheckSquare },
   { href: '/claims', label: 'Claim Graph', icon: GitBranch },
   { href: '/ectd', label: 'eCTD Mapping', icon: FolderTree },
-  { href: '/endpoints', label: 'Endpoint Data', icon: Table },
-  { href: '/ontology', label: 'Ontology', icon: Network },
-  { href: '/semantic-validation', label: 'Semantic Validation', icon: ShieldCheck },
-  { href: '/readiness', label: 'Readiness', icon: Gauge },
-  { href: '/provenance', label: 'Provenance', icon: Workflow },
   { href: '/audit', label: 'Audit', icon: History },
   { href: '/export', label: 'Export Center', icon: Download },
 ];
@@ -101,7 +101,7 @@ export default function Sidebar({ projectId, projectName }: SidebarProps) {
 
       {/* Footer */}
       <div className="px-4 py-4 border-t border-slate-700">
-        <p className="text-xs text-slate-500 text-center">NAM Evidence Standardization Tool</p>
+        <p className="text-xs text-slate-500 text-center">Standardize · Validate · Export</p>
       </div>
     </aside>
   );

@@ -18,18 +18,23 @@ Suggested tour order
 
 Use this order the first time you explore the app:
 
-1. **Overview** - see the project summary and workspace cards.
-2. **Context of Use** - read the regulatory question and intended use.
-3. **NAM Study** - inspect model-system metadata and assay details.
-4. **Validation Matrix** - see the evidence framework and status labels.
-5. **Claim Graph** - review claims that must be human-approved.
-6. **Endpoint Data** - inspect standardized measurements and unresolved rows.
-7. **Ontology** - approve or reject suggested controlled-vocabulary mappings.
-8. **Semantic Validation** - see blockers grouped by workspace.
-9. **Readiness** - read the FAIR/AI-readiness score and recommended fixes.
-10. **Provenance** - check whether endpoint values trace back to raw files.
-11. **Audit** - review recorded changes.
-12. **Export Center** - download packages once review gates allow it.
+1. **Overview** - start with the standardization status hero, readiness score,
+   before/after panel, top blockers, and audience-specific paths.
+2. **Endpoint Data** - inspect the raw-to-canonical workflow: CSV import,
+   column mapping, unit normalization, validation summary, and stored
+   ``EndpointMeasurement`` rows.
+3. **Ontology** - approve or reject controlled-vocabulary mappings.
+4. **Semantic Validation** - see blockers grouped by workspace.
+5. **Readiness** - read the FAIR/AI-readiness score and recommended fixes.
+6. **Provenance** - check whether endpoint values trace back to raw files.
+7. **Context of Use** - read the regulatory question and intended use.
+8. **NAM Study** - inspect model-system metadata and assay details.
+9. **Validation Matrix** - see the evidence framework and status labels.
+10. **Claim Graph** - review claims that must be human-approved.
+11. **eCTD Mapping** - inspect one downstream regulatory consumer of the
+    standardized package.
+12. **Audit** - review recorded changes.
+13. **Export Center** - download packages once review gates allow it.
 
 What the before-state demo teaches
 ----------------------------------
@@ -43,6 +48,25 @@ The normal demo intentionally contains blockers:
 * claims that still require human review.
 
 These are not bugs. They show how the app prevents premature formal packaging.
+
+What to foreground in a live demo
+---------------------------------
+
+Lead with this story:
+
+   Before standardization, a NAM study is a spreadsheet, a protocol note, and a
+   regulatory argument. After, it is a validated, ontology-linked,
+   provenance-aware, context-of-use evidence package for scientists, reviewers,
+   and AI pipelines.
+
+Then show three concrete transformations:
+
+* **Scientist** - Endpoint Data turns messy rows into canonical endpoint
+  measurements with units, assays, samples, and provenance flags.
+* **AI pipeline** - Ontology and exports create controlled terms and
+  machine-readable JSON-LD, RDF/Turtle, Parquet, ISA-Tab, and RO-Crate outputs.
+* **Reviewer** - Semantic Validation, Readiness, Claim Graph, and Audit expose
+  blockers, human review state, and defensible traceability.
 
 What the corrected demo teaches
 -------------------------------

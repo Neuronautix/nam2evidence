@@ -11,15 +11,16 @@ Basic workflow
 The app is organized around a project. Inside each project, use the sidebar
 tabs from top to bottom:
 
-1. define the context of use;
-2. inspect or import NAM study metadata;
-3. review validation evidence;
-4. review claims;
-5. map evidence to eCTD Module 4;
-6. standardize endpoints and ontology mappings;
-7. run semantic validation and readiness checks;
-8. inspect provenance and audit trail;
-9. export only after review gates are cleared.
+1. inspect the standardization status Overview;
+2. standardize endpoint rows;
+3. approve ontology mappings;
+4. run semantic validation and readiness checks;
+5. inspect provenance;
+6. review context of use and NAM study metadata;
+7. review validation evidence and claims;
+8. map evidence to eCTD Module 4 where relevant;
+9. inspect audit trail;
+10. export only after review gates are cleared.
 
 Human review rule
 -----------------
