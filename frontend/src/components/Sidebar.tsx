@@ -13,6 +13,12 @@ import {
   ChevronLeft,
   Home,
   Upload,
+  Table,
+  Network,
+  ShieldCheck,
+  Gauge,
+  History,
+  Workflow,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -29,6 +35,12 @@ const navItems = [
   { href: '/validation', label: 'Validation Matrix', icon: CheckSquare },
   { href: '/claims', label: 'Claim Graph', icon: GitBranch },
   { href: '/ectd', label: 'eCTD Mapping', icon: FolderTree },
+  { href: '/endpoints', label: 'Endpoint Data', icon: Table },
+  { href: '/ontology', label: 'Ontology', icon: Network },
+  { href: '/semantic-validation', label: 'Semantic Validation', icon: ShieldCheck },
+  { href: '/readiness', label: 'Readiness', icon: Gauge },
+  { href: '/provenance', label: 'Provenance', icon: Workflow },
+  { href: '/audit', label: 'Audit', icon: History },
   { href: '/export', label: 'Export Center', icon: Download },
 ];
 

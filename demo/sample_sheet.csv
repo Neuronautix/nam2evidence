@@ -1,0 +1,13 @@
+sample_code,biological_system,donor,cell_source,batch,replicate,passage_number
+S-001,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B1,R1,P4
+S-002,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B1,R2,P4
+S-003,iPSC-derived liver organoid,DONOR-02,iPSC-hep-line-B,B1,R3,
+S-004,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B1,R1,P4
+S-005,iPSC-derived liver organoid,DONOR-02,iPSC-hep-line-B,B1,R2,
+S-006,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B2,R1,P6
+S-007,iPSC-derived liver organoid,DONOR-02,iPSC-hep-line-B,B2,R2,
+S-008,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B2,R1,P6
+S-009,iPSC-derived liver organoid,DONOR-02,iPSC-hep-line-B,B2,R1,
+S-010,iPSC-derived liver organoid,DONOR-02,iPSC-hep-line-B,B2,R3,
+S-011,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B1,R1,P4
+S-012,iPSC-derived liver organoid,DONOR-01,iPSC-hep-line-A,B2,R2,P6

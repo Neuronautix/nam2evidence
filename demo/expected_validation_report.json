@@ -1,0 +1,24 @@
+{
+  "note": "Expected shape of the semantic-validation report for the demo project in the BEFORE state (endpoint_measurements_raw.csv imported, mandatory ontology terms not yet approved, legacy claims still human_review_required). Counts are indicative for the demo, not an exact contract.",
+  "before_state": {
+    "conforms": false,
+    "expected_blocking_issues": [
+      { "rule": "EndpointMeasurementShape", "field": "unit", "entity_hint": "S-005 ldh_release", "message": "Endpoint measurement has no unit." },
+      { "rule": "EndpointMeasurementShape", "field": "endpoint_ontology_iri", "entity_hint": "S-009 lipid_peroxidation_index", "message": "Endpoint is not mapped to an ontology term.", "severity": "warning" },
+      { "rule": "EndpointMeasurementShape", "field": "provenance", "entity_hint": "S-009 lipid_peroxidation_index", "message": "Links to neither a raw data file nor an analysis activity." },
+      { "rule": "EndpointMeasurementShape", "field": "value", "entity_hint": "S-010 atp_viability", "message": "Value 'QNS' is not numeric." },
+      { "rule": "OntologyMappingShape", "field": "mapping_status", "entity_hint": "lipid_peroxidation_index", "message": "Mandatory ontology mapping is not approved." },
+      { "rule": "EvidenceClaimShape", "field": "review_status", "entity_hint": "CLAIM-001..005", "message": "Claim still requires human review — blocks formal export." }
+    ],
+    "expected_warnings_include": [
+      "Donor DONOR-02 missing passage number (sample sheet).",
+      "iPSC-derived system should declare a differentiation protocol."
+    ],
+    "export_gate": { "blocked": true }
+  },
+  "after_state": {
+    "note": "After importing endpoint_measurements_corrected.csv, approving mandatory ontology mappings (including a term for lipid_peroxidation_index), recording DONOR-02 passage number, linking provenance, and approving the claims.",
+    "conforms": true,
+    "export_gate": { "blocked": false, "export_status": "internally_reviewed" }
+  }
+}

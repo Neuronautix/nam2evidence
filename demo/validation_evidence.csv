@@ -1,0 +1,8 @@
+evidence_id,domain,question,evidence_type,status,notes
+EVID-001,analytical_validity,Is ATP viability analytically validated with Z' >= 0.5?,Assay validation,met,Z'=0.72 mean of 3 runs
+EVID-003,technical_reproducibility,Is intra-assay CV <= 25% for primary endpoints?,Replicate statistics,met,CV 8-22%
+EVID-005,biological_relevance,Does the model express key hepatic transporters?,Transporter expression,partial,BSEP ~30% of primary hepatocyte level
+EVID-007,reference_compound_performance,Does the model classify the reference panel correctly?,Concordance,met,Sensitivity 83% specificity 75%
+EVID-009,exposure_relevance,Does highest concentration reach >= 30x human Cmax?,Exposure analysis,met,Coverage 167x
+EVID-011,data_integrity,Are raw data retained with an audit trail?,ELN/LIMS,met,LIMS-NNX archive
+EVID-013,limitation_analysis,Are model limitations documented?,Limitation register,met,Four limitations in COU-HEP-001

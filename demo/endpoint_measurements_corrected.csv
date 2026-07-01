@@ -1,0 +1,13 @@
+study,assay,sample,exposure,endpoint,endpoint_iri,value,unit,timepoint,timepoint_unit,replicate,batch,donor,raw_file,qc_status
+NAM-STUDY-001,ATP viability,S-001,Acetaminophen,atp_viability,OBI:0002119,98.2,percent,24,hour,R1,B1,DONOR-01,celltiterglo_run1.csv,pass
+NAM-STUDY-001,ATP viability,S-002,Acetaminophen,atp_viability,OBI:0002119,71.4,percent,24,hour,R2,B1,DONOR-01,celltiterglo_run1.csv,pass
+NAM-STUDY-001,ATP viability,S-003,Acetaminophen,atp_viability,OBI:0002119,44.9,percent,24,hour,R3,B1,DONOR-02,celltiterglo_run1.csv,pass
+NAM-STUDY-001,LDH release,S-004,Acetaminophen,ldh_release,OBI:0002994,12.1,percent,24,hour,R1,B1,DONOR-01,cytotox_run1.csv,pass
+NAM-STUDY-001,LDH release,S-005,Acetaminophen,ldh_release,OBI:0002994,38.7,percent,24,hour,R2,B1,DONOR-02,cytotox_run1.csv,pass
+NAM-STUDY-001,MMP JC-1,S-006,CX-4471,mmp_jc1,NCIT:C17610,0.82,ratio,72,hour,R1,B2,DONOR-01,jc1_run2.csv,pass
+NAM-STUDY-001,MMP JC-1,S-007,CX-4471,mmp_jc1,NCIT:C17610,0.59,ratio,72,hour,R2,B2,DONOR-02,jc1_run2.csv,pass
+NAM-STUDY-001,Bile acid LC-MS,S-008,CX-4471,bile_acid_accumulation,NCIT:C154834,3.2,fold,72,hour,R1,B2,DONOR-01,lcms_run2.csv,pass
+NAM-STUDY-001,ROS CellROX,S-009,CX-4471,ros_generation,CHEBI:26523,1.7,fold,72,hour,R1,B2,DONOR-02,cellrox_run2.csv,pass
+NAM-STUDY-001,ATP viability,S-010,CX-4471,atp_viability,OBI:0002119,52.3,percent,24,hour,R3,B2,DONOR-02,celltiterglo_run2.csv,pass
+NAM-STUDY-001,ATP viability,S-011,Metformin,atp_viability,OBI:0002119,99.1,percent,24,hour,R1,B1,DONOR-01,celltiterglo_run1.csv,pass
+NAM-STUDY-001,ROS CellROX,S-012,CX-4471,ros_generation,CHEBI:26523,2.4,fold,72,hour,R2,B2,DONOR-01,cellrox_run2.csv,pass

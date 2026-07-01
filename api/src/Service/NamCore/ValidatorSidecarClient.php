@@ -16,10 +16,14 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  */
 final class ValidatorSidecarClient
 {
+    private readonly string $baseUrl;
+
     public function __construct(
         #[Autowire('%env(default::VALIDATOR_URL)%')]
-        private readonly string $baseUrl = '',
-    ) {}
+        ?string $baseUrl = null,
+    ) {
+        $this->baseUrl = $baseUrl ?? '';
+    }
 
     public function isConfigured(): bool
     {
