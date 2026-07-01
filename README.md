@@ -65,10 +65,17 @@ docker compose up --build
 # Apply database schema (required on first run)
 docker compose exec -T api php bin/console doctrine:migrations:migrate --no-interaction
 
-# Load the canonical demo project + ontology seed
+# Load the canonical demo project + ontology seed + NAM-CORE standardization layer
 docker compose exec -T api php bin/console app:load-demo-data --force
 docker compose exec -T api php bin/console app:load-ontology-seed
+docker compose exec -T api php bin/console app:load-namcore-demo          # endpoints, ontology mappings, provenance
+# add --corrected to load the resolved (all-blockers-cleared) state instead
 ```
+
+> `app:load-namcore-demo` is what populates the six new NAM-CORE workspaces
+> (Endpoint Data, Ontology, Semantic Validation, Readiness, Provenance, Audit).
+> Run it after `app:load-demo-data`; run `app:load-ontology-seed` first so mappings
+> can auto-suggest against the seed vocabulary.
 
 If Symfony cache files were created with mixed host/container ownership, clear the
 generated cache from inside the container first:
@@ -82,6 +89,7 @@ docker compose exec -T --user root api sh -lc 'rm -rf var/cache/* && php bin/con
 | Frontend (Next.js) | http://localhost:3000 |
 | Backend API | http://localhost:8080/api |
 | API documentation | http://localhost:8080/api/docs |
+| Validator sidecar (optional) | http://localhost:8000/health |
 
 **First-use check:** open http://localhost:8080/api/v1/projects — a fresh
 environment returns `[]`.
@@ -206,6 +214,7 @@ Reload at any time:
 ```bash
 docker compose exec -T api php bin/console app:load-demo-data --force
 docker compose exec -T api php bin/console app:load-ontology-seed
+docker compose exec -T api php bin/console app:load-namcore-demo   # add --corrected for the resolved state
 ```
 
 ---
@@ -234,19 +243,31 @@ symfony server:start
 
 ## Testing
 
-```bash
-# Frontend
-npm -C "frontend" run lint
-npm -C "frontend" run build
-```
-
-Backend export integration tests (Docker DB + API image):
+**Frontend**
 
 ```bash
-docker compose up -d db
-docker compose exec -T db psql -U namo_user -d postgres -c "CREATE DATABASE namo_ind_mapper_test_test;"
-docker compose run --rm --entrypoint sh api -lc "APP_ENV=test DATABASE_URL='postgresql://namo_user:namo_password@db:5432/namo_ind_mapper_test?serverVersion=16&charset=utf8' php bin/console doctrine:migrations:migrate --no-interaction && APP_ENV=test DATABASE_URL='postgresql://namo_user:namo_password@db:5432/namo_ind_mapper_test?serverVersion=16&charset=utf8' php vendor/bin/phpunit -c phpunit.xml.dist --filter ExportControllerTest"
+cd frontend
+npm run lint
+npm run build
+npx tsc --noEmit
 ```
+
+**Backend** — the suite covers unit tests (unit normalizer, endpoint-importer preview,
+Turtle/RO-Crate serializers) and integration tests (`NamCoreApiTest`: endpoint import,
+ontology approve/reject, semantic validation, readiness, export gate, all export formats,
+audit log) alongside the original export tests. Same setup CI uses:
+
+```bash
+cd api
+composer install
+# create + migrate the test database (Doctrine appends the _test suffix in APP_ENV=test)
+php bin/console doctrine:database:create --env=test --if-not-exists
+php bin/console doctrine:migrations:migrate --env=test --no-interaction
+vendor/bin/phpunit                 # runs the full suite (unit + integration)
+```
+
+CI (`.github/workflows/ci.yml`) provisions a PostgreSQL service, runs the same
+create/migrate/phpunit steps, and builds the frontend on every push to a PR.
 
 ---
 
@@ -260,6 +281,7 @@ docker compose run --rm --entrypoint sh api -lc "APP_ENV=test DATABASE_URL='post
 | [docs/EXPORTS.md](docs/EXPORTS.md) | Every export format, endpoint, intended consumer, and disclaimer. |
 | [docs/REGULATORY_POSITIONING.md](docs/REGULATORY_POSITIONING.md) | What the tool does and does not do; standardization ≠ validation. |
 | [docs/POC_DEMO_SCRIPT.md](docs/POC_DEMO_SCRIPT.md) | Step-by-step before/after demo narrative with expected outputs. |
+| [CHANGELOG.md](CHANGELOG.md) | Summary of the NAM-CORE layer: new entities, endpoints, screens, run/test steps, limitations, next steps. |
 
 ---
 
@@ -273,10 +295,12 @@ NAMO-to-IND-Mapper/
 │       ├── Entity/NamCore/    # NAM-CORE v0.1 entities
 │       ├── Service/NamCore/   # importer, validators, scorer, exporters
 │       ├── Controller/V1/     # /api/v1 endpoints
-│       └── Command/           # app:load-demo-data, app:load-ontology-seed
+│       └── Command/           # app:load-demo-data, app:load-ontology-seed, app:load-namcore-demo
+├── services/validator/        # optional pyshacl + pyarrow sidecar (Flask)
 ├── standards/                 # SHACL shapes, JSON-LD context, seed vocabulary
-├── demo/                      # raw demo CSVs (with deliberate gaps)
+├── demo/                      # raw + corrected demo CSVs (with deliberate gaps)
 ├── docs/                      # documentation (see above)
+├── CHANGELOG.md               # summary of the NAM-CORE standardization layer
 └── docker-compose.yml         # full-stack orchestration
 ```
 
