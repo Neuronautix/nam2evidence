@@ -1,0 +1,17 @@
+Analysis provenance reference — NAM-STUDY-001
+
+Repository:        github.com/neuronautix/cx4471-hep-analysis
+Tag/commit:        v1.2 (commit 7f3a1c9)
+Language:          R 4.3 + Python 3.11
+Entry point:       pipeline/run_concentration_response.R
+Container:         ghcr.io/neuronautix/cx4471-hep-analysis:v1.2 (digest archived in LIMS)
+Software:          GraphPad Prism 10 (curve fitting), TIBCO Spotfire 12.1 (QC review)
+Responsible role:  Computational toxicology analyst
+Analysis date:     2026-03-20
+Description:        Normalizes raw luminescence/fluorescence to vehicle control, fits
+                   4-parameter concentration-response, derives TC50, applies QC/exclusion
+                   rules, and emits the canonical endpoint measurement table.
+
+Note: the "Novel oxidative panel" (lipid_peroxidation_index) rows in the raw export were
+produced by an exploratory notebook that was NOT linked to a raw instrument file — this is
+a deliberate provenance gap in the demo "before" state.

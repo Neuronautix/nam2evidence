@@ -1,0 +1,4 @@
+device_id,device_type,vendor,model,serial_number,firmware_version,platform_type
+plate-reader-01,multilabel plate reader,PerkinElmer,EnVision 2105,ENV-2105-7781,3.2.1,plate reader
+qtof-01,LC-MS/MS,Agilent,6545 QTOF,QTOF-6545-2210,B.09.00,mass spectrometry
+confocal-01,high-content imager,Molecular Devices,ImageXpress Micro,IXM-4432,6.5.4,high-content imaging

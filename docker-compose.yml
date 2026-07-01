@@ -29,6 +29,9 @@ services:
       DATABASE_URL: "postgresql://namo_user:namo_password@db:5432/namo_ind_mapper?serverVersion=16&charset=utf8"
       CORS_ALLOW_ORIGIN: "^https?://(localhost|127\\.0\\.0\\.1)(:[0-9]+)?$"
       DEFAULT_URI: "http://localhost:8080"
+      # Optional pyshacl + pyarrow sidecar for SHACL validation and native Parquet.
+      # Leave unset to use the PHP-native validator and CSV Parquet fallback.
+      VALIDATOR_URL: "http://validator:8000"
     ports:
       - "8080:80"
     depends_on:
@@ -37,6 +40,18 @@ services:
     volumes:
       - ./api:/var/www/api:cached
       - api_vendor:/var/www/api/vendor
+
+  validator:
+    build:
+      context: ./services/validator
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    # SHACL (pyshacl) + Parquet (pyarrow) sidecar. Optional: the API degrades
+    # gracefully to PHP-native validation and CSV Parquet if this is not running.
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
 
   frontend:
     build:

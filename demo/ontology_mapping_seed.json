@@ -1,0 +1,20 @@
+{
+  "note": "Suggested source-value -> ontology-term mappings for the demo project. Loaded as OntologyMapping rows in mapping_status 'suggested'; a human approves/rejects. Mandatory mappings block AI-ready status until approved. The 'lipid_peroxidation_index' endpoint is intentionally left unmapped in the before state.",
+  "mappings": [
+    { "source_entity_type": "cell_type", "source_value": "hepatocyte-like cell", "suggested_curie": "CL:0002310", "mandatory": true },
+    { "source_entity_type": "anatomy",   "source_value": "liver", "suggested_curie": "UBERON:0002107", "mandatory": true },
+    { "source_entity_type": "species",   "source_value": "Homo sapiens", "suggested_curie": "NCBITaxon:9606", "mandatory": true },
+    { "source_entity_type": "disease",   "source_value": "hepatotoxicity", "suggested_curie": "MONDO:0005359", "mandatory": false },
+    { "source_entity_type": "chemical",  "source_value": "acetaminophen", "suggested_curie": "CHEBI:46195", "mandatory": true },
+    { "source_entity_type": "chemical",  "source_value": "CX-4471 (kinase inhibitor)", "suggested_curie": "CHEBI:38637", "mandatory": true },
+    { "source_entity_type": "assay",     "source_value": "ATP viability", "suggested_curie": "OBI:0002119", "mandatory": false },
+    { "source_entity_type": "assay",     "source_value": "LDH release", "suggested_curie": "OBI:0002994", "mandatory": false },
+    { "source_entity_type": "endpoint",  "source_value": "mitochondrial membrane potential", "suggested_curie": "NCIT:C17610", "mandatory": false },
+    { "source_entity_type": "endpoint",  "source_value": "bile acid accumulation", "suggested_curie": "NCIT:C154834", "mandatory": false },
+    { "source_entity_type": "endpoint",  "source_value": "reactive oxygen species", "suggested_curie": "CHEBI:26523", "mandatory": false },
+    { "source_entity_type": "unit",      "source_value": "micromolar", "suggested_curie": "UO:0000064", "mandatory": true },
+    { "source_entity_type": "unit",      "source_value": "hour", "suggested_curie": "UO:0000032", "mandatory": true },
+    { "source_entity_type": "unit",      "source_value": "percent", "suggested_curie": "UO:0000187", "mandatory": true },
+    { "source_entity_type": "endpoint",  "source_value": "lipid_peroxidation_index", "suggested_curie": null, "mandatory": true }
+  ]
+}

@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { Project, ContextOfUseCard, NAMStudy, EvidenceItem, ClaimNode, ECTDMapping } from '@/lib/types';
-import { Download, FileJson, FileText, FileSpreadsheet, FolderTree, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Download, FileJson, FileText, FileSpreadsheet, FolderTree, AlertTriangle, CheckCircle, Boxes, Share2, Database, Package } from 'lucide-react';
 import {
   ApiDownloadError,
   ExportFormat,
   generateAndDownloadExport,
   saveBlob,
 } from '@/lib/api';
+
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
 interface ExportCenterProps {
   project: Project;
@@ -154,6 +156,70 @@ export default function ExportCenter(props: ExportCenterProps) {
             </div>
           );
         })}
+      </div>
+
+      {/* NAM-CORE reusable exports */}
+      <div className="card p-5 border border-slate-200">
+        <h3 className="text-sm font-semibold text-slate-800 mb-1">NAM-CORE reusable exports</h3>
+        <p className="text-xs text-slate-500 mb-4">
+          FAIR-oriented, machine-readable exports of the standardized NAM-CORE dataset. POC
+          standardization — requires qualified human review; not an official submission standard.
+        </p>
+
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: FileJson, label: 'JSON-LD', path: 'jsonld', desc: 'Linked-data JSON export' },
+            { icon: Share2, label: 'RDF/Turtle', path: 'turtle', desc: 'RDF graph in Turtle syntax' },
+            { icon: Boxes, label: 'ISA-Tab ZIP', path: 'isa-tab', desc: 'ISA-Tab experimental metadata' },
+            { icon: Database, label: 'Parquet', path: 'parquet', desc: 'Columnar dataset for analytics' },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <a
+                key={item.path}
+                href={`${API}/api/v1/projects/${project.id}/exports/${item.path}`}
+                className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 hover:border-blue-400 transition-colors"
+              >
+                <div className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 text-slate-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-slate-800">{item.label}</span>
+                    <Download className="w-3.5 h-3.5 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">{item.desc}</p>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        <p className="text-xs text-slate-500 mt-3">
+          ISA-Tab is provided for experimental metadata interoperability, not regulatory submission.
+        </p>
+
+        {/* RO-Crate */}
+        <div className="mt-5 border-t border-slate-200 pt-4">
+          <p className="text-xs font-semibold text-slate-700 mb-2">RO-Crate bundle includes:</p>
+          <ul className="list-disc list-inside text-xs text-slate-500 space-y-0.5 mb-3">
+            <li>NAM-CORE JSON</li>
+            <li>JSON-LD</li>
+            <li>Endpoint CSV</li>
+            <li>Validation report</li>
+            <li>Readiness report</li>
+            <li>Markdown dossier</li>
+            <li>eCTD TXT</li>
+            <li>Provenance</li>
+          </ul>
+          <a
+            href={`${API}/api/v1/projects/${project.id}/exports/ro-crate`}
+            className="btn-primary text-xs py-1.5 inline-flex"
+          >
+            <Package className="w-3.5 h-3.5" />
+            Download RO-Crate ZIP
+          </a>
+        </div>
       </div>
 
       {/* Disclaimer */}

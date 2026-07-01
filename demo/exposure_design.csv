@@ -1,0 +1,5 @@
+exposure_id,test_article,test_article_iri,concentration_value,concentration_unit,timepoint_value,timepoint_unit,vehicle
+Acetaminophen,acetaminophen,CHEBI:46195,10000,micromolar,24,hour,DMSO 0.1%
+CX-4471,CX-4471 (kinase inhibitor),CHEBI:38637,30,micromolar,72,hour,DMSO 0.1%
+Metformin,metformin,CHEBI:6801,10000,micromolar,24,hour,DMSO 0.1%
+Vehicle control,DMSO,CHEBI:28262,0.1,percent,72,hour,DMSO 0.1%

@@ -1,0 +1,239 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix nam:  <https://w3id.org/nam-core/0.1/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+#
+# NAM-CORE v0.1 SHACL shapes.
+#
+# These shapes express the semantic constraints of the toolkit against the
+# JSON-LD graph produced by GET /api/v1/projects/{id}/exports/jsonld. They are
+# evaluated by the pyshacl sidecar (services/validator). Each violation carries a
+# sh:message the API surfaces as {rule, recommended_fix}. Blocking severity =
+# sh:Violation; advisory = sh:Warning.
+#
+# This is a proof-of-concept ruleset — NOT an official regulatory or SEND schema.
+#
+
+## ---------------------------------------------------------------------------
+## Context of Use
+## ---------------------------------------------------------------------------
+nam:ContextOfUseShape a sh:NodeShape ;
+    sh:targetClass nam:ContextOfUse ;
+    sh:property [
+        sh:path nam:decisionQuestion ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:severity sh:Violation ;
+        sh:message "ContextOfUse must include a decision_question." ;
+    ] ;
+    sh:property [
+        sh:path nam:intendedUse ;
+        sh:minCount 1 ;
+        sh:minLength 1 ;
+        sh:severity sh:Violation ;
+        sh:message "ContextOfUse must include intended_use." ;
+    ] ;
+    sh:property [
+        sh:path nam:biologicalDomain ;
+        sh:minCount 1 ;
+        sh:minLength 1 ;
+        sh:severity sh:Violation ;
+        sh:message "ContextOfUse must include biological_domain." ;
+    ] ;
+    sh:property [
+        sh:path nam:regulatorySupportLevel ;
+        sh:minCount 1 ;
+        sh:minLength 1 ;
+        sh:severity sh:Violation ;
+        sh:message "ContextOfUse must include regulatory_support_level." ;
+    ] .
+
+# Every project must have exactly one ContextOfUse.
+nam:ProjectShape a sh:NodeShape ;
+    sh:targetClass nam:Project ;
+    sh:property [
+        sh:path nam:contextOfUse ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Every project must declare exactly one ContextOfUse." ;
+    ] .
+
+## ---------------------------------------------------------------------------
+## Biological System
+## ---------------------------------------------------------------------------
+nam:BiologicalSystemShape a sh:NodeShape ;
+    sh:targetClass nam:BiologicalSystem ;
+    sh:property [
+        sh:path nam:modelSystemType ;
+        sh:minCount 1 ;
+        sh:minLength 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Every NAM study's biological system must declare model_system_type." ;
+    ] ;
+    sh:or (
+        [ sh:path nam:species ; sh:minCount 1 ]
+        [ sh:path nam:cellSource ; sh:minCount 1 ]
+    ) ;
+    sh:property [
+        sh:path nam:cellType ;
+        sh:minCount 1 ;
+        sh:severity sh:Warning ;
+        sh:message "Biological system should map cellType to at least one ontology term." ;
+    ] .
+
+# Organoid / organ-on-chip systems must declare a cell source.
+nam:OrganoidCellSourceShape a sh:NodeShape ;
+    sh:targetClass nam:BiologicalSystem ;
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Organoid and organ-on-chip systems must declare a cell source." ;
+        sh:prefixes nam: ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            SELECT $this WHERE {
+                $this nam:modelSystemType ?t .
+                FILTER (?t IN ('organoid','organ_on_chip','tissue_on_chip'))
+                FILTER NOT EXISTS { $this nam:cellSource ?cs }
+            }
+        """ ;
+    ] .
+
+## ---------------------------------------------------------------------------
+## Exposure
+## ---------------------------------------------------------------------------
+nam:ExposureShape a sh:NodeShape ;
+    sh:targetClass nam:Exposure ;
+    sh:property [
+        sh:path nam:testArticle ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Every exposure must have a test article." ;
+    ] ;
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Every concentration must have a unit." ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            SELECT $this WHERE {
+                $this nam:concentrationValue ?v .
+                FILTER NOT EXISTS { $this nam:concentrationUnit ?u }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Every timepoint must have a unit." ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            SELECT $this WHERE {
+                $this nam:timepointValue ?v .
+                FILTER NOT EXISTS { $this nam:timepointUnit ?u }
+            }
+        """ ;
+    ] .
+
+## ---------------------------------------------------------------------------
+## Endpoint Measurement
+## ---------------------------------------------------------------------------
+nam:EndpointMeasurementShape a sh:NodeShape ;
+    sh:targetClass nam:EndpointMeasurement ;
+    sh:property [
+        sh:path nam:value ;
+        sh:minCount 1 ;
+        sh:datatype xsd:double ;
+        sh:severity sh:Violation ;
+        sh:message "Endpoint measurement value must be present and numeric." ;
+    ] ;
+    sh:property [
+        sh:path nam:unit ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Endpoint measurement must have a unit (mapped or explicitly justified)." ;
+    ] ;
+    sh:property [
+        sh:path nam:endpoint ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Endpoint measurement must link to an endpoint definition." ;
+    ] ;
+    sh:property [
+        sh:path nam:sample ;
+        sh:minCount 1 ;
+        sh:severity sh:Warning ;
+        sh:message "Endpoint measurement should link to a sample." ;
+    ] ;
+    sh:property [
+        sh:path nam:assay ;
+        sh:minCount 1 ;
+        sh:severity sh:Warning ;
+        sh:message "Endpoint measurement should link to an assay." ;
+    ] ;
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Endpoint measurement must link to a raw data file or an analysis activity." ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            SELECT $this WHERE {
+                FILTER NOT EXISTS { $this prov:wasDerivedFrom ?r }
+                FILTER NOT EXISTS { $this prov:wasGeneratedBy ?a }
+            }
+        """ ;
+    ] .
+
+## ---------------------------------------------------------------------------
+## Evidence Claim
+## ---------------------------------------------------------------------------
+nam:EvidenceClaimShape a sh:NodeShape ;
+    sh:targetClass nam:EvidenceClaim ;
+    sh:property [
+        sh:path nam:reviewStatus ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "Every claim must have a review status." ;
+    ] ;
+    # decision-informing / potentially-pivotal claims must be supported.
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Decision-informing or potentially-pivotal claims must link to validation evidence." ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            SELECT $this WHERE {
+                $this nam:confidence ?c .
+                FILTER (?c IN ('decision_informing','potentially_pivotal'))
+                FILTER NOT EXISTS { $this nam:supportedBy ?e }
+            }
+        """ ;
+    ] ;
+    # export blocker: any claim still requiring human review.
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Export is blocked while a claim remains human_review_required." ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            SELECT $this WHERE {
+                $this nam:reviewStatus 'human_review_required' .
+            }
+        """ ;
+    ] .
+
+## ---------------------------------------------------------------------------
+## Provenance
+## ---------------------------------------------------------------------------
+nam:AnalysisActivityShape a sh:NodeShape ;
+    sh:targetClass prov:Activity ;
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "Every analysis activity must include a software name or script reference." ;
+        sh:select """
+            PREFIX nam: <https://w3id.org/nam-core/0.1/>
+            SELECT $this WHERE {
+                FILTER NOT EXISTS { $this nam:softwareName ?s }
+                FILTER NOT EXISTS { $this nam:scriptReference ?r }
+            }
+        """ ;
+    ] .

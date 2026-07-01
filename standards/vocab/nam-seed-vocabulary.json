@@ -1,0 +1,172 @@
+{
+  "$schema_note": "Local seed vocabulary for the NAM-CORE POC. No live internet lookup is required. IRIs point at the canonical ontology term pages; they are references, not fetched at runtime. Curate/expand per project.",
+  "vocabulary_version": "0.1",
+  "generated_for": "COU-HEP-001 liver organoid hepatotoxicity demo",
+  "terms": [
+    {
+      "label": "hepatocyte-like cell",
+      "ontology_prefix": "CL",
+      "curie": "CL:0002310",
+      "iri": "http://purl.obolibrary.org/obo/CL_0002310",
+      "definition": "A cell in vitro that has been differentiated toward a hepatocyte phenotype from a pluripotent or progenitor source.",
+      "synonyms": ["iPSC-derived hepatocyte", "HLC"],
+      "source": "Cell Ontology",
+      "term_version": "2024-01",
+      "maps": "cell_type"
+    },
+    {
+      "label": "liver organoid",
+      "ontology_prefix": "CL",
+      "curie": "CL:0000182",
+      "iri": "http://purl.obolibrary.org/obo/CL_0000182",
+      "definition": "Hepatocyte reference term used for iPSC-derived liver organoid systems in this POC.",
+      "synonyms": ["iPSC-derived liver organoid", "hepatic organoid"],
+      "source": "Cell Ontology",
+      "term_version": "2024-01",
+      "maps": "cell_type"
+    },
+    {
+      "label": "liver",
+      "ontology_prefix": "UBERON",
+      "curie": "UBERON:0002107",
+      "iri": "http://purl.obolibrary.org/obo/UBERON_0002107",
+      "definition": "An exocrine gland which secretes bile and functions in metabolism of protein, carbohydrate and fat.",
+      "synonyms": ["hepatic tissue"],
+      "source": "Uberon",
+      "term_version": "2024-01",
+      "maps": "anatomy"
+    },
+    {
+      "label": "hepatotoxicity",
+      "ontology_prefix": "MONDO",
+      "curie": "MONDO:0005359",
+      "iri": "http://purl.obolibrary.org/obo/MONDO_0005359",
+      "definition": "Drug-induced liver injury; hepatocellular damage resulting from exposure to a xenobiotic.",
+      "synonyms": ["drug-induced liver injury", "DILI", "hepatocellular injury"],
+      "source": "MONDO",
+      "term_version": "2024-01",
+      "maps": "disease"
+    },
+    {
+      "label": "ATP viability assay",
+      "ontology_prefix": "OBI",
+      "curie": "OBI:0002119",
+      "iri": "http://purl.obolibrary.org/obo/OBI_0002119",
+      "definition": "A cell viability assay measuring intracellular ATP as a surrogate for metabolically active cells.",
+      "synonyms": ["CellTiter-Glo", "ATP content assay"],
+      "source": "Ontology for Biomedical Investigations",
+      "term_version": "2024-01",
+      "maps": "assay"
+    },
+    {
+      "label": "LDH release assay",
+      "ontology_prefix": "OBI",
+      "curie": "OBI:0002994",
+      "iri": "http://purl.obolibrary.org/obo/OBI_0002994",
+      "definition": "A cytotoxicity assay quantifying lactate dehydrogenase released from cells with compromised membranes.",
+      "synonyms": ["LDH cytotoxicity assay", "CytoTox-ONE"],
+      "source": "Ontology for Biomedical Investigations",
+      "term_version": "2024-01",
+      "maps": "assay"
+    },
+    {
+      "label": "mitochondrial membrane potential",
+      "ontology_prefix": "NCIT",
+      "curie": "NCIT:C17610",
+      "iri": "http://purl.obolibrary.org/obo/NCIT_C17610",
+      "definition": "The electrochemical gradient across the inner mitochondrial membrane, used as a marker of mitochondrial function.",
+      "synonyms": ["MMP", "ΔΨm", "JC-1 ratio"],
+      "source": "NCI Thesaurus",
+      "term_version": "2024-01",
+      "maps": "endpoint"
+    },
+    {
+      "label": "reactive oxygen species",
+      "ontology_prefix": "CHEBI",
+      "curie": "CHEBI:26523",
+      "iri": "http://purl.obolibrary.org/obo/CHEBI_26523",
+      "definition": "A molecular entity containing oxygen that is highly reactive, including superoxide and hydrogen peroxide.",
+      "synonyms": ["ROS", "oxidative stress marker"],
+      "source": "ChEBI",
+      "term_version": "2024-01",
+      "maps": "endpoint"
+    },
+    {
+      "label": "bile acid accumulation",
+      "ontology_prefix": "NCIT",
+      "curie": "NCIT:C154834",
+      "iri": "http://purl.obolibrary.org/obo/NCIT_C154834",
+      "definition": "Intracellular accumulation of bile acids, an indicator of cholestatic liability in hepatic systems.",
+      "synonyms": ["intracellular bile acid", "cholestasis marker"],
+      "source": "NCI Thesaurus",
+      "term_version": "2024-01",
+      "maps": "endpoint"
+    },
+    {
+      "label": "acetaminophen",
+      "ontology_prefix": "CHEBI",
+      "curie": "CHEBI:46195",
+      "iri": "http://purl.obolibrary.org/obo/CHEBI_46195",
+      "definition": "A member of the class of phenols; a widely used analgesic and reference hepatotoxicant.",
+      "synonyms": ["paracetamol", "APAP", "N-acetyl-p-aminophenol"],
+      "source": "ChEBI",
+      "term_version": "2024-01",
+      "maps": "chemical"
+    },
+    {
+      "label": "kinase inhibitor",
+      "ontology_prefix": "CHEBI",
+      "curie": "CHEBI:38637",
+      "iri": "http://purl.obolibrary.org/obo/CHEBI_38637",
+      "definition": "Any compound that inhibits the activity of a protein kinase; drug class of the demo test article CX-4471.",
+      "synonyms": ["protein kinase inhibitor", "PKI"],
+      "source": "ChEBI",
+      "term_version": "2024-01",
+      "maps": "chemical"
+    },
+    {
+      "label": "micromolar",
+      "ontology_prefix": "UO",
+      "curie": "UO:0000064",
+      "iri": "http://purl.obolibrary.org/obo/UO_0000064",
+      "definition": "A concentration unit equal to one micromole per litre (UCUM: umol/L; symbol µM).",
+      "synonyms": ["µM", "uM", "micromole per litre"],
+      "source": "Units of Measurement Ontology / UCUM",
+      "term_version": "2024-01",
+      "maps": "unit"
+    },
+    {
+      "label": "hour",
+      "ontology_prefix": "UO",
+      "curie": "UO:0000032",
+      "iri": "http://purl.obolibrary.org/obo/UO_0000032",
+      "definition": "A time unit equal to 3600 seconds (UCUM: h).",
+      "synonyms": ["h", "hr", "hours"],
+      "source": "Units of Measurement Ontology / UCUM",
+      "term_version": "2024-01",
+      "maps": "unit"
+    },
+    {
+      "label": "percent",
+      "ontology_prefix": "UO",
+      "curie": "UO:0000187",
+      "iri": "http://purl.obolibrary.org/obo/UO_0000187",
+      "definition": "A dimensionless ratio unit expressed per hundred (UCUM: %).",
+      "synonyms": ["%", "percentage"],
+      "source": "Units of Measurement Ontology / UCUM",
+      "term_version": "2024-01",
+      "maps": "unit"
+    },
+    {
+      "label": "Homo sapiens",
+      "ontology_prefix": "NCBITaxon",
+      "curie": "NCBITaxon:9606",
+      "iri": "http://purl.obolibrary.org/obo/NCBITaxon_9606",
+      "definition": "Human; the species of origin of the iPSC-derived liver organoid donors.",
+      "synonyms": ["human"],
+      "source": "NCBI Taxonomy",
+      "term_version": "2024-01",
+      "maps": "species"
+    }
+  ]
+}
