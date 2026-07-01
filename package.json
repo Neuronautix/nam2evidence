@@ -1,0 +1,16 @@
+{
+  "name": "nam2evidence",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "private": true,
+  "description": "NAM study standardization into ontology-linked, provenance-aware evidence packages.",
+  "scripts": {
+    "install:frontend": "npm --prefix frontend install",
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend run start",
+    "lint": "npm --prefix frontend run lint",
+    "typecheck": "npm --prefix frontend exec tsc -- --noEmit",
+    "docs:build": "python -m sphinx -W -b html docs docs/_build/html"
+  }
+}

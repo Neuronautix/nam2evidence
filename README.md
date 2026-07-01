@@ -271,10 +271,14 @@ docker compose exec -T api php bin/console app:load-namcore-demo   # add --corre
 ### Frontend (standalone demo)
 
 ```bash
-cd frontend
-npm install
+npm run install:frontend
 npm run dev            # http://localhost:3000  (set NEXT_PUBLIC_DATA_MODE=demo for bundled data)
 ```
+
+The root `npm` scripts forward to the Next.js app in `frontend/`, so you can run
+`npm run dev`, `npm run build`, `npm run lint`, and `npm run typecheck` from the
+repository root. If you prefer working inside the frontend folder, the same
+commands also work after `cd frontend`.
 
 ### Backend
 
@@ -293,10 +297,9 @@ symfony server:start
 **Frontend**
 
 ```bash
-cd frontend
 npm run lint
 npm run build
-npx tsc --noEmit
+npm run typecheck
 ```
 
 **Backend** — the suite covers unit tests (unit normalizer, endpoint-importer preview,
