@@ -43,6 +43,29 @@ Then recreate the API container:
 
    docker compose up -d api
 
+Symfony says DebugBundle is missing
+-----------------------------------
+
+If ``castor start`` fails with ``Class "Symfony\\Bundle\\DebugBundle\\DebugBundle"
+not found``, the API container is running in ``APP_ENV=dev`` but the Docker
+``api_vendor`` volume was created before development Composer dependencies were
+installed.
+
+Run:
+
+.. code-block:: powershell
+
+   docker compose exec -T api composer install --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+   castor start
+
+If the API container cannot start at all, rebuild and recreate the stack:
+
+.. code-block:: powershell
+
+   docker compose down
+   docker compose up -d --build
+   castor start
+
 NAM-CORE demo CSV missing
 -------------------------
 

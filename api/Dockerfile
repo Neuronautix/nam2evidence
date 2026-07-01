@@ -23,9 +23,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/api
 
-# Copy composer files first for layer caching
-COPY composer.json ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts 2>/dev/null || true
+# Copy composer files first for layer caching. The default compose stack runs
+# APP_ENV=dev, so dev bundles must be present in the local image.
+COPY composer.json composer.lock symfony.lock ./
+RUN composer install --prefer-dist --no-interaction --optimize-autoloader --no-scripts
 
 # Copy application source
 COPY . .

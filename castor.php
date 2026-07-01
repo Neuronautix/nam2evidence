@@ -15,6 +15,10 @@ function start(
 
     run(['docker', 'compose', 'up', '-d', '--build']);
 
+    io()->section('Installing API dependencies');
+    docker_compose_exec_api(['composer', 'install', '--prefer-dist', '--no-interaction', '--optimize-autoloader', '--no-scripts']);
+
+    io()->section('Migrating and loading demo data');
     docker_compose_exec_api(['php', 'bin/console', 'doctrine:migrations:migrate', '--no-interaction']);
     docker_compose_exec_api(['php', 'bin/console', 'app:load-demo-data', '--force']);
     docker_compose_exec_api(['php', 'bin/console', 'app:load-ontology-seed']);
