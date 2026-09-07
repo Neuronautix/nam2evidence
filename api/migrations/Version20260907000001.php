@@ -94,6 +94,10 @@ final class Version20260907000001 extends AbstractMigration
         $this->addSql('ALTER TABLE context_of_use_cards DROP source_reference');
         $this->addSql('DROP TABLE namcore_nam_method');
         $this->addSql('DROP TABLE namcore_source_project');
+        // Legacy schema requires a non-null drug name. Generic imported projects
+        // legitimately use NULL while this migration is active, so make rollback
+        // total rather than failing on ALTER ... SET NOT NULL.
+        $this->addSql("UPDATE projects SET drug_name = '[not applicable]' WHERE drug_name IS NULL");
         $this->addSql('ALTER TABLE projects ALTER drug_name SET NOT NULL');
         $this->addSql('ALTER TABLE projects DROP project_type');
         $this->addSql('ALTER TABLE projects DROP source_name');
