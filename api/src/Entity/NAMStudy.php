@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: NAMStudyRepository::class)]
 #[ORM\Table(name: 'nam_studies')]
@@ -116,4 +117,31 @@ class NAMStudy
     public function setProvenance(array $v): static { $this->provenance = $v; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getEvidenceItems(): Collection { return $this->evidenceItems; }
+
+    #[Assert\Callback]
+    public function validateRelationshipConsistency(ExecutionContextInterface $context): void
+    {
+        if (isset($this->project, $this->contextOfUse)
+            && $this->contextOfUse->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('NAMStudy contextOfUse must belong to the same project as the study.')
+                ->atPath('contextOfUse')->addViolation();
+        }
+
+        if (isset($this->project) && $this->namMethod !== null
+            && $this->namMethod->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('NAMStudy namMethod must belong to the same project as the study.')
+                ->atPath('namMethod')->addViolation();
+        }
+
+        if (isset($this->contextOfUse) && $this->namMethod !== null) {
+            $couMethod = $this->contextOfUse->getNamMethod();
+            if ($couMethod === null) {
+                $context->buildViolation('NAMStudy namMethod cannot be set when contextOfUse has no NAM method link.')
+                    ->atPath('namMethod')->addViolation();
+            } elseif ($couMethod->getId()->toRfc4122() !== $this->namMethod->getId()->toRfc4122()) {
+                $context->buildViolation('NAMStudy namMethod must match the NAM method linked to contextOfUse.')
+                    ->atPath('namMethod')->addViolation();
+            }
+        }
+    }
 }
