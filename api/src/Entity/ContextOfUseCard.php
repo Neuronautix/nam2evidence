@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Context of Use Card — the central artefact declaring the regulatory/scientific
@@ -203,4 +204,14 @@ class ContextOfUseCard
     public function setVersion(string $v): static { $this->version = $v; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): \DateTimeImmutable { return $this->updatedAt; }
+
+    #[Assert\Callback]
+    public function validateMethodProjectConsistency(ExecutionContextInterface $context): void
+    {
+        if (isset($this->project) && $this->namMethod !== null
+            && $this->namMethod->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('ContextOfUse namMethod must belong to the same project as the Context of Use.')
+                ->atPath('namMethod')->addViolation();
+        }
+    }
 }
