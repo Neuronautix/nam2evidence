@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Entity\NamCore\NAMMethod;
 use App\Repository\NAMStudyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,12 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * A NAMO-aligned NAM study record. Stores structured metadata covering the model system,
- * experimental design, assay metadata, data outputs, and provenance.
- * All compound/array fields are stored as JSONB for flexibility.
- */
 #[ORM\Entity(repositoryClass: NAMStudyRepository::class)]
 #[ORM\Table(name: 'nam_studies')]
 #[ApiResource(
@@ -54,31 +51,32 @@ class NAMStudy
     #[Groups(['read', 'write'])]
     private ContextOfUseCard $contextOfUse;
 
+    /** Optional explicit method identity. Legacy studies may infer it through their CoU. */
+    #[ORM\ManyToOne(targetEntity: NAMMethod::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['read', 'write'])]
+    private ?NAMMethod $namMethod = null;
+
     #[ORM\Column(type: 'text')]
     #[Groups(['read', 'write'])]
     private string $title = '';
 
-    /** JSONB: NAMO model system classification (class, species, cell type, vendor, …) */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $modelSystem = [];
 
-    /** JSONB: concentrations, duration, replicates, reference compounds, … */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $experimentalDesign = [];
 
-    /** JSONB: endpoints, instrument, software, … */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $assayMetadata = [];
 
-    /** JSONB: TC50, NOAEL, safety multiples, key numerical results */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $dataOutputs = [];
 
-    /** JSONB: study director, facility, ELN references, SOP IDs, git hashes */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $provenance = [];
@@ -103,6 +101,8 @@ class NAMStudy
     public function setProject(Project $v): static { $this->project = $v; return $this; }
     public function getContextOfUse(): ContextOfUseCard { return $this->contextOfUse; }
     public function setContextOfUse(ContextOfUseCard $v): static { $this->contextOfUse = $v; return $this; }
+    public function getNamMethod(): ?NAMMethod { return $this->namMethod; }
+    public function setNamMethod(?NAMMethod $v): static { $this->namMethod = $v; return $this; }
     public function getTitle(): string { return $this->title; }
     public function setTitle(string $v): static { $this->title = $v; return $this; }
     public function getModelSystem(): array { return $this->modelSystem; }
@@ -117,4 +117,31 @@ class NAMStudy
     public function setProvenance(array $v): static { $this->provenance = $v; return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getEvidenceItems(): Collection { return $this->evidenceItems; }
+
+    #[Assert\Callback]
+    public function validateRelationshipConsistency(ExecutionContextInterface $context): void
+    {
+        if (isset($this->project, $this->contextOfUse)
+            && $this->contextOfUse->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('NAMStudy contextOfUse must belong to the same project as the study.')
+                ->atPath('contextOfUse')->addViolation();
+        }
+
+        if (isset($this->project) && $this->namMethod !== null
+            && $this->namMethod->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('NAMStudy namMethod must belong to the same project as the study.')
+                ->atPath('namMethod')->addViolation();
+        }
+
+        if (isset($this->contextOfUse) && $this->namMethod !== null) {
+            $couMethod = $this->contextOfUse->getNamMethod();
+            if ($couMethod === null) {
+                $context->buildViolation('NAMStudy namMethod cannot be set when contextOfUse has no NAM method link.')
+                    ->atPath('namMethod')->addViolation();
+            } elseif ($couMethod->getId()->toRfc4122() !== $this->namMethod->getId()->toRfc4122()) {
+                $context->buildViolation('NAMStudy namMethod must match the NAM method linked to contextOfUse.')
+                    ->atPath('namMethod')->addViolation();
+            }
+        }
+    }
 }
