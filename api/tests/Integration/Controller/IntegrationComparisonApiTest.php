@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Controller;
 
+use App\Entity\ContextOfUseCard;
+use App\Entity\NamCore\EvidenceAssessment;
+use App\Entity\NamCore\NAMMethod;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class IntegrationComparisonApiTest extends WebTestCase
 {
@@ -50,6 +54,74 @@ final class IntegrationComparisonApiTest extends WebTestCase
         $this->client->request('GET', '/api/v1/compare/contexts?method_type=organ_on_chip');
         self::assertResponseIsSuccessful();
         self::assertSame(1, $this->json()['count']);
+    }
+
+    public function testSourceLocalBusinessIdsAreNamespacedAcrossProjects(): void
+    {
+        $firstPayload = $this->payload('Source programme A', 'academic', 'METHOD-A', 'Method A', 'organoid', 'COU-1', 'academic', null);
+        $secondPayload = $this->payload('Source programme B', 'regulatory_reference', 'METHOD-B', 'Method B', 'organ_on_chip', 'COU-1', 'fda', 'FDA');
+
+        foreach ([&$firstPayload, &$secondPayload] as &$payload) {
+            $payload['studies'][0]['study_id'] = 'STUDY-1';
+            $payload['evidence'][0]['study_id'] = 'STUDY-1';
+            $payload['evidence'][1]['study_id'] = 'STUDY-1';
+            $payload['evidence'][0]['evidence_id'] = 'EV-1';
+            $payload['evidence'][1]['evidence_id'] = 'EV-2';
+        }
+        unset($payload);
+
+        $this->client->jsonRequest('POST', '/api/v1/integrations/normalized', $firstPayload);
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        $first = $this->json();
+
+        $this->client->jsonRequest('POST', '/api/v1/integrations/normalized', $secondPayload);
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        $second = $this->json();
+
+        self::assertNotSame($first['id_namespace'], $second['id_namespace']);
+        self::assertNotSame($first['context_id_map']['COU-1'], $second['context_id_map']['COU-1']);
+        self::assertNotSame($first['study_id_map']['STUDY-1'], $second['study_id_map']['STUDY-1']);
+        self::assertNotSame($first['evidence_id_map']['EV-1'], $second['evidence_id_map']['EV-1']);
+        self::assertStringContainsString('COU-1', $first['context_id_map']['COU-1']);
+        self::assertStringContainsString('COU-1', $second['context_id_map']['COU-1']);
+
+        $this->client->request('GET', '/api/v1/compare/contexts?biological_domain=DILI');
+        self::assertResponseIsSuccessful();
+        self::assertSame(2, $this->json()['count']);
+    }
+
+    public function testAssessmentValidatorRejectsCrossProjectAndMethodLinks(): void
+    {
+        $this->client->jsonRequest('POST', '/api/v1/integrations/normalized', $this->payload('Validation source A', 'academic', 'METHOD-A', 'Method A', 'organoid', 'COU-A', 'academic', null));
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        $first = $this->json();
+
+        $this->client->jsonRequest('POST', '/api/v1/integrations/normalized', $this->payload('Validation source B', 'regulatory_reference', 'METHOD-B', 'Method B', 'organ_on_chip', 'COU-B', 'fda', 'FDA'));
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        /** @var NAMMethod $methodA */
+        $methodA = $this->em->getRepository(NAMMethod::class)->findOneBy(['methodId' => 'METHOD-A']);
+        /** @var NAMMethod $methodB */
+        $methodB = $this->em->getRepository(NAMMethod::class)->findOneBy(['methodId' => 'METHOD-B']);
+        /** @var ContextOfUseCard $couA */
+        $couA = $this->em->getRepository(ContextOfUseCard::class)->findOneBy(['couId' => $first['context_id_map']['COU-A']]);
+
+        $invalid = (new EvidenceAssessment())
+            ->setProject($methodA->getProject())
+            ->setNamMethod($methodB)
+            ->setContextOfUse($couA)
+            ->setLabel('Intentionally inconsistent assessment')
+            ->setAssessmentType('regulatory_review')
+            ->setAssessorOrganization('Test authority');
+
+        /** @var ValidatorInterface $validator */
+        $validator = static::getContainer()->get(ValidatorInterface::class);
+        $violations = $validator->validate($invalid);
+
+        self::assertGreaterThanOrEqual(2, count($violations));
+        $paths = [];
+        foreach ($violations as $violation) $paths[] = $violation->getPropertyPath();
+        self::assertContains('namMethod', $paths);
     }
 
     /** @return array<string,mixed> */
