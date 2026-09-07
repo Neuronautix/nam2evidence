@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Entity\NamCore\NAMMethod;
 use App\Repository\ContextOfUseCardRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -17,8 +18,10 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Context of Use Card — the central artefact declaring the regulatory question,
- * intended use, biological domain, limitations, and confidence level for a NAM.
+ * Context of Use Card — the central artefact declaring the regulatory/scientific
+ * question, intended use, applicability domain, limitations, and confidence
+ * level for a NAM. A CoU may reference a reusable NAMMethod; method identity and
+ * fitness-for-purpose are deliberately kept separate.
  */
 #[ORM\Entity(repositoryClass: ContextOfUseCardRepository::class)]
 #[ORM\Table(name: 'context_of_use_cards')]
@@ -48,7 +51,13 @@ class ContextOfUseCard
     #[Groups(['read', 'write'])]
     private Project $project;
 
-    /** NAMO model-system class: Organoid | OrganOnChip | QSARModel | CellBasedAssay | … */
+    /** Optional reusable method identity; legacy projects may remain unlinked. */
+    #[ORM\ManyToOne(targetEntity: NAMMethod::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['read', 'write'])]
+    private ?NAMMethod $namMethod = null;
+
+    /** NAMO/model-system class: Organoid | OrganOnChip | QSARModel | CellBasedAssay | … */
     #[ORM\Column(length: 60)]
     #[Assert\NotBlank]
     #[Groups(['read', 'write'])]
@@ -60,7 +69,7 @@ class ContextOfUseCard
     #[Groups(['read', 'write'])]
     private string $regulatoryQuestion = '';
 
-    /** IND-enabling | pre_IND | phase_I | … */
+    /** IND-enabling | pre_IND | phase_I | screening | regulatory_assessment | … */
     #[ORM\Column(length: 60)]
     #[Groups(['read', 'write'])]
     private string $drugDevelopmentStage = '';
@@ -85,12 +94,35 @@ class ContextOfUseCard
     #[Groups(['read', 'write'])]
     private ?string $populationRelevance = null;
 
-    /** JSONB array of known model limitations */
+    /** Test-article/chemical/modality scope relevant to this CoU. */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $testArticleScope = null;
+
+    /** Structured applicability constraints for this use. */
+    #[ORM\Column(type: 'json')]
+    #[Groups(['read', 'write'])]
+    private array $applicabilityDomain = [];
+
+    /** Regulator/standards body relevant to this CoU, if any. */
+    #[ORM\Column(length: 120, nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $regulatoryAuthority = null;
+
+    /** Verbatim source statement retained for traceable normalization. */
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $sourceText = null;
+
+    /** URL, DOI, registry key, or document reference supporting sourceText. */
+    #[ORM\Column(length: 2048, nullable: true)]
+    #[Groups(['read', 'write'])]
+    private ?string $sourceReference = null;
+
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $limitations = [];
 
-    /** JSONB array of pre-specified acceptance criteria */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $acceptanceCriteria = [];
@@ -100,9 +132,9 @@ class ContextOfUseCard
     #[Groups(['read', 'write'])]
     private string $regulatoryConfidenceLevel = 'exploratory';
 
-    /** draft | validated | reviewer_pending | approved | rejected */
     #[ORM\Column(length: 30, options: ['default' => 'draft'])]
     #[Assert\Choice(choices: ['draft', 'validated', 'reviewer_pending', 'approved', 'rejected'])]
+    #[Groups(['read', 'write'])]
     private string $reviewStatus = 'draft';
 
     #[ORM\Column(length: 20)]
@@ -124,16 +156,15 @@ class ContextOfUseCard
     }
 
     #[ORM\PreUpdate]
-    public function onPreUpdate(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
+    public function onPreUpdate(): void { $this->updatedAt = new \DateTimeImmutable(); }
 
     public function getId(): Ulid { return $this->id; }
     public function getCouId(): string { return $this->couId; }
     public function setCouId(string $couId): static { $this->couId = $couId; return $this; }
     public function getProject(): Project { return $this->project; }
     public function setProject(Project $project): static { $this->project = $project; return $this; }
+    public function getNamMethod(): ?NAMMethod { return $this->namMethod; }
+    public function setNamMethod(?NAMMethod $v): static { $this->namMethod = $v; return $this; }
     public function getNamType(): string { return $this->namType; }
     public function setNamType(string $namType): static { $this->namType = $namType; return $this; }
     public function getRegulatoryQuestion(): string { return $this->regulatoryQuestion; }
@@ -150,6 +181,16 @@ class ContextOfUseCard
     public function setEndpointClass(string $v): static { $this->endpointClass = $v; return $this; }
     public function getPopulationRelevance(): ?string { return $this->populationRelevance; }
     public function setPopulationRelevance(?string $v): static { $this->populationRelevance = $v; return $this; }
+    public function getTestArticleScope(): ?string { return $this->testArticleScope; }
+    public function setTestArticleScope(?string $v): static { $this->testArticleScope = $v; return $this; }
+    public function getApplicabilityDomain(): array { return $this->applicabilityDomain; }
+    public function setApplicabilityDomain(array $v): static { $this->applicabilityDomain = $v; return $this; }
+    public function getRegulatoryAuthority(): ?string { return $this->regulatoryAuthority; }
+    public function setRegulatoryAuthority(?string $v): static { $this->regulatoryAuthority = $v; return $this; }
+    public function getSourceText(): ?string { return $this->sourceText; }
+    public function setSourceText(?string $v): static { $this->sourceText = $v; return $this; }
+    public function getSourceReference(): ?string { return $this->sourceReference; }
+    public function setSourceReference(?string $v): static { $this->sourceReference = $v; return $this; }
     public function getLimitations(): array { return $this->limitations; }
     public function setLimitations(array $v): static { $this->limitations = $v; return $this; }
     public function getAcceptanceCriteria(): array { return $this->acceptanceCriteria; }

@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Entity\NamCore\NAMMethod;
 use App\Repository\NAMStudyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,11 +19,6 @@ use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * A NAMO-aligned NAM study record. Stores structured metadata covering the model system,
- * experimental design, assay metadata, data outputs, and provenance.
- * All compound/array fields are stored as JSONB for flexibility.
- */
 #[ORM\Entity(repositoryClass: NAMStudyRepository::class)]
 #[ORM\Table(name: 'nam_studies')]
 #[ApiResource(
@@ -54,31 +50,32 @@ class NAMStudy
     #[Groups(['read', 'write'])]
     private ContextOfUseCard $contextOfUse;
 
+    /** Optional explicit method identity. Legacy studies may infer it through their CoU. */
+    #[ORM\ManyToOne(targetEntity: NAMMethod::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['read', 'write'])]
+    private ?NAMMethod $namMethod = null;
+
     #[ORM\Column(type: 'text')]
     #[Groups(['read', 'write'])]
     private string $title = '';
 
-    /** JSONB: NAMO model system classification (class, species, cell type, vendor, …) */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $modelSystem = [];
 
-    /** JSONB: concentrations, duration, replicates, reference compounds, … */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $experimentalDesign = [];
 
-    /** JSONB: endpoints, instrument, software, … */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $assayMetadata = [];
 
-    /** JSONB: TC50, NOAEL, safety multiples, key numerical results */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $dataOutputs = [];
 
-    /** JSONB: study director, facility, ELN references, SOP IDs, git hashes */
     #[ORM\Column(type: 'json')]
     #[Groups(['read', 'write'])]
     private array $provenance = [];
@@ -103,6 +100,8 @@ class NAMStudy
     public function setProject(Project $v): static { $this->project = $v; return $this; }
     public function getContextOfUse(): ContextOfUseCard { return $this->contextOfUse; }
     public function setContextOfUse(ContextOfUseCard $v): static { $this->contextOfUse = $v; return $this; }
+    public function getNamMethod(): ?NAMMethod { return $this->namMethod; }
+    public function setNamMethod(?NAMMethod $v): static { $this->namMethod = $v; return $this; }
     public function getTitle(): string { return $this->title; }
     public function setTitle(string $v): static { $this->title = $v; return $this; }
     public function getModelSystem(): array { return $this->modelSystem; }
