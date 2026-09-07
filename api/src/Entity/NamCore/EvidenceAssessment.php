@@ -15,6 +15,7 @@ use App\Entity\Project;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * A dated scientific, peer-review, regulatory, or qualification assessment of
@@ -129,4 +130,47 @@ class EvidenceAssessment
     public function setEvidenceBasis(array $v): static { $this->evidenceBasis = $v; return $this; }
     public function getConditions(): array { return $this->conditions; }
     public function setConditions(array $v): static { $this->conditions = $v; return $this; }
+
+    /**
+     * Prevent cross-project or cross-method relationship combinations from being
+     * persisted through API Platform POST/PUT operations. Comparison logic groups
+     * assessments by CoU, so inconsistent links would otherwise misattribute
+     * regulatory/scientific conclusions.
+     */
+    #[Assert\Callback]
+    public function validateRelationshipConsistency(ExecutionContextInterface $context): void
+    {
+        if (isset($this->project) && $this->namMethod !== null
+            && $this->namMethod->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('EvidenceAssessment namMethod must belong to the same project as the assessment.')
+                ->atPath('namMethod')->addViolation();
+        }
+
+        if (isset($this->project) && $this->contextOfUse !== null
+            && $this->contextOfUse->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('EvidenceAssessment contextOfUse must belong to the same project as the assessment.')
+                ->atPath('contextOfUse')->addViolation();
+        }
+
+        if (isset($this->project) && $this->sourceProject !== null
+            && $this->sourceProject->getProject()->getId()->toRfc4122() !== $this->project->getId()->toRfc4122()) {
+            $context->buildViolation('EvidenceAssessment sourceProject must belong to the same project as the assessment.')
+                ->atPath('sourceProject')->addViolation();
+        }
+
+        if ($this->contextOfUse !== null) {
+            $couMethod = $this->contextOfUse->getNamMethod();
+            if ($couMethod === null && $this->namMethod !== null) {
+                $context->buildViolation('EvidenceAssessment namMethod cannot be set when the referenced contextOfUse has no NAM method link.')
+                    ->atPath('namMethod')->addViolation();
+            } elseif ($couMethod !== null && $this->namMethod === null) {
+                $context->buildViolation('EvidenceAssessment namMethod is required when the referenced contextOfUse is linked to a NAM method.')
+                    ->atPath('namMethod')->addViolation();
+            } elseif ($couMethod !== null && $this->namMethod !== null
+                && $couMethod->getId()->toRfc4122() !== $this->namMethod->getId()->toRfc4122()) {
+                $context->buildViolation('EvidenceAssessment namMethod must match the NAM method linked to contextOfUse.')
+                    ->atPath('namMethod')->addViolation();
+            }
+        }
+    }
 }
