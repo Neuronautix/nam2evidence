@@ -1,12 +1,12 @@
-# nam2evidence - Precise Implementation Plan (Todo)
+# Implementation Plan
 
 Last updated: 2026-05-06
-Planning source: initial_prompt.md + current repository state
+Planning source: [design-brief.md](design-brief.md) + current repository state
 
 ## 1) Current state review (completed)
 
 ### 1.1 Prompt and planning baseline
-- [x] Reviewed and validated the implementation planning brief in initial_prompt.md.
+- [x] Reviewed and validated the implementation planning brief in [design-brief.md](design-brief.md).
 - [x] Confirmed the brief is aligned with NAMO-first architecture and COU-driven regulatory packaging.
 
 ### 1.2 Repository state inspection
@@ -311,5 +311,5 @@ Acceptance criteria:
 
 - [ ] Update this file at end of each implementation session.
 - [ ] Move completed items from immediate actions into phase checklists.
-- [ ] Keep objective and acceptance criteria synchronized with initial_prompt.md.
+- [ ] Keep objective and acceptance criteria synchronized with [design-brief.md](design-brief.md).
 - [ ] Do not mark a task complete without linked code/tests/docs evidence.

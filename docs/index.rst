@@ -22,6 +22,10 @@ required before outputs are used in an IND, eCTD, or other filing.
 Where to start
 --------------
 
+If you have never used GitHub before, start here:
+
+1. :doc:`getting-started/never-used-github`
+
 If you only want to run the app and try the demo, start here:
 
 1. :doc:`getting-started/non-coder-start`
@@ -37,6 +41,7 @@ If something fails during setup, use:
    :maxdepth: 2
    :caption: Getting Started
 
+   getting-started/never-used-github
    getting-started/non-coder-start
    getting-started/demo-tour
    getting-started/windows-troubleshooting

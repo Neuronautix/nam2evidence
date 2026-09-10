@@ -5,7 +5,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { X } from 'lucide-react';
 
 // Valid eCTD Module 4 / 2 section anchor list from the brief
-// (initial_prompt.md lines 237-246).
+// (docs/development/design-brief.md, section "5. eCTD export map").
 export const VALID_ECTD_SECTIONS: Array<{ section: string; title: string }> = [
   { section: '4.2.1.1', title: 'Primary pharmacodynamics' },
   { section: '4.2.1.2', title: 'Secondary pharmacodynamics' },

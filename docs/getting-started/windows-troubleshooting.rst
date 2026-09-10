@@ -26,8 +26,8 @@ If it still fails:
 
 .. code-block:: powershell
 
-   C:\Users\damie\.local\bin\castor.cmd --version
-   C:\Users\damie\.local\bin\castor.cmd start
+   $HOME\.local\bin\castor.cmd --version
+   $HOME\.local\bin\castor.cmd start
 
 Castor says PHP 8.4.1+ is required
 ----------------------------------

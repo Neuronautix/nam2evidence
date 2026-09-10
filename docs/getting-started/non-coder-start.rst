@@ -4,6 +4,11 @@ Start the App Without Coding
 This page assumes you are on Windows and want to run the app, not develop it.
 You only need Docker Desktop, PowerShell, and the commands below.
 
+.. note::
+
+   If you have never used GitHub and do not yet have the project files on your
+   computer, read :doc:`never-used-github` first.
+
 What you will open
 ------------------
 
@@ -35,11 +40,23 @@ One-time setup
 
 2. Open PowerShell in the repository folder.
 
-   If the repository is still in its original folder name, this is:
+   Replace the path below with wherever you put the folder. If you followed
+   :doc:`never-used-github`, it is most likely one of these:
 
    .. code-block:: powershell
 
-      cd C:\Users\damie\Documents\GitHub\NAMO-to-IND-Mapper
+      # If you cloned it with Git into your Documents folder:
+      cd $HOME\Documents\nam2evidence
+
+      # If you downloaded and unzipped the ZIP:
+      cd $HOME\Downloads\nam2evidence-main
+
+   You are in the right folder if this command lists a file named
+   ``docker-compose.yml``:
+
+   .. code-block:: powershell
+
+      ls docker-compose.yml
 
 3. Install Castor, the task runner used by the project.
 
@@ -101,7 +118,7 @@ installed path:
 
 .. code-block:: powershell
 
-   C:\Users\damie\.local\bin\castor.cmd start
+   $HOME\.local\bin\castor.cmd start
 
 If you do not want to use Castor at all, run:
 

@@ -14,6 +14,13 @@ castor start
 If Castor is not installed, run the equivalent `docker compose` commands in the
 README.
 
+## Planning Documents
+
+Before proposing larger changes, read the engineering notes in
+[docs/development/](docs/development/): the design brief, the phased
+implementation plan, and the roadmap. Keep them updated when your change moves
+planned work forward.
+
 ## Pull Requests
 
 - Keep changes focused and explain the user-facing or technical impact.

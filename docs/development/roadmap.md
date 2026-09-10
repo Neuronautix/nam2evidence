@@ -1,4 +1,4 @@
-# NAM-CORE Standardization Toolkit — Implementation Plan
+# Roadmap — NAM-CORE Standardization Layer
 
 Transform nam2evidence from a regulatory evidence-packaging prototype into a
 modular, FAIR-by-design, ontology-linked, validator-driven NAM standardization toolkit —

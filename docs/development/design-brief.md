@@ -1,4 +1,4 @@
-# nam2evidence: Implementation Planning Brief
+# Design Brief — Implementation Planning
 
 ## Current objective
 
