@@ -260,10 +260,12 @@ final class RegulatoryEvidenceController extends AbstractController
         if (array_key_exists('reviewed_by', $body)) $assessment->setReviewedBy($body['reviewed_by'] === null ? null : trim((string) $body['reviewed_by']));
         if (array_key_exists('reviewer_comment', $body)) $assessment->setReviewerComment($body['reviewer_comment'] === null ? null : (string) $body['reviewer_comment']);
 
-        if ($assessment->getReviewStatus() === RequirementAssessment::REVIEW_HUMAN_REVIEWED) {
-            $assessment->setReviewedAt(new \DateTimeImmutable());
-        } elseif (array_key_exists('review_status', $body)) {
-            $assessment->setReviewedAt(null);
+        if (array_key_exists('review_status', $body)) {
+            if ($assessment->getReviewStatus() === RequirementAssessment::REVIEW_HUMAN_REVIEWED) {
+                $assessment->setReviewedAt(new \DateTimeImmutable());
+            } else {
+                $assessment->setReviewedAt(null);
+            }
         }
 
         $violations = $this->validator->validate($assessment);
@@ -273,7 +275,9 @@ final class RegulatoryEvidenceController extends AbstractController
 
         $this->em->flush();
         $after = $this->serializeAssessment($assessment);
-        $actor = $assessment->getReviewedBy() ?? (isset($body['updated_by']) ? (string) $body['updated_by'] : 'system');
+        $actor = isset($body['updated_by'])
+            ? (string) $body['updated_by']
+            : (isset($body['reviewed_by']) ? (string) $body['reviewed_by'] : 'system');
 
         $this->audit->log(
             $project,
