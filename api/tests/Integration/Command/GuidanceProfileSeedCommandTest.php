@@ -87,7 +87,7 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
         $attempt = $this->runCommand('app:load-guidance-profiles');
         self::assertSame(Command::FAILURE, $attempt->getStatusCode());
         self::assertStringContainsString('seed content changed', $attempt->getDisplay());
-        self::assertStringContainsString('profile version', $attempt->getDisplay());
+        self::assertStringContainsString('overwriting a curated reference', $attempt->getDisplay());
     }
 
     public function testDemoAssessmentsProduceMixedEvidenceCoverageStates(): void
