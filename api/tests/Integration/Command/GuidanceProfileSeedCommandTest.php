@@ -31,7 +31,7 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
 
     public function testFdaProfileIsDraftSourceCitedConditionalAndIdempotent(): void
     {
-        $first = $this->run('app:load-guidance-profiles');
+        $first = $this->runCommand('app:load-guidance-profiles');
         self::assertSame(Command::SUCCESS, $first->getStatusCode());
 
         /** @var GuidanceProfile|null $profile */
@@ -64,7 +64,7 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
         self::assertSame('not_applicable', $comparator->getApplicabilityRules()['otherwise']);
         self::assertTrue($comparator->getApplicabilityRules()['requires_human_interpretation']);
 
-        $second = $this->run('app:load-guidance-profiles');
+        $second = $this->runCommand('app:load-guidance-profiles');
         self::assertSame(Command::SUCCESS, $second->getStatusCode());
         self::assertCount(1, $this->em->getRepository(GuidanceProfile::class)->findAll());
         self::assertCount(16, $this->em->getRepository(GuidanceRequirement::class)->findBy(['profile' => $profile]));
@@ -72,7 +72,7 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
 
     public function testSameVersionChangedSeedFingerprintIsRejected(): void
     {
-        self::assertSame(Command::SUCCESS, $this->run('app:load-guidance-profiles')->getStatusCode());
+        self::assertSame(Command::SUCCESS, $this->runCommand('app:load-guidance-profiles')->getStatusCode());
 
         /** @var GuidanceProfile $profile */
         $profile = $this->em->getRepository(GuidanceProfile::class)->findOneBy([
@@ -84,17 +84,17 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
         $profile->setSourceMetadata($metadata);
         $this->em->flush();
 
-        $attempt = $this->run('app:load-guidance-profiles');
+        $attempt = $this->runCommand('app:load-guidance-profiles');
         self::assertSame(Command::FAILURE, $attempt->getStatusCode());
         self::assertStringContainsString('Create a new profile version', $attempt->getDisplay());
     }
 
     public function testDemoAssessmentsProduceMixedEvidenceCoverageStates(): void
     {
-        $demo = $this->run('app:load-demo-data', ['--force' => true]);
+        $demo = $this->runCommand('app:load-demo-data', ['--force' => true]);
         self::assertSame(Command::SUCCESS, $demo->getStatusCode());
 
-        $guidance = $this->run('app:load-guidance-profiles', ['--with-demo-assessments' => true]);
+        $guidance = $this->runCommand('app:load-guidance-profiles', ['--with-demo-assessments' => true]);
         self::assertSame(Command::SUCCESS, $guidance->getStatusCode());
 
         /** @var ContextOfUseCard $cou */
@@ -133,7 +133,7 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
         // Re-running the demo seeder preserves the existing assessment set.
         self::assertSame(
             Command::SUCCESS,
-            $this->run('app:load-guidance-profiles', ['--with-demo-assessments' => true])->getStatusCode(),
+            $this->runCommand('app:load-guidance-profiles', ['--with-demo-assessments' => true])->getStatusCode(),
         );
         self::assertCount(16, $this->em->getRepository(RequirementAssessment::class)->findBy([
             'project' => $cou->getProject(),
@@ -142,7 +142,7 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
     }
 
     /** @param array<string,mixed> $arguments */
-    private function run(string $name, array $arguments = []): CommandTester
+    private function runCommand(string $name, array $arguments = []): CommandTester
     {
         $tester = new CommandTester($this->application->find($name));
         $tester->execute($arguments, ['interactive' => false]);
