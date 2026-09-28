@@ -86,7 +86,8 @@ final class GuidanceProfileSeedCommandTest extends KernelTestCase
 
         $attempt = $this->runCommand('app:load-guidance-profiles');
         self::assertSame(Command::FAILURE, $attempt->getStatusCode());
-        self::assertStringContainsString('Create a new profile version', $attempt->getDisplay());
+        self::assertStringContainsString('seed content changed', $attempt->getDisplay());
+        self::assertStringContainsString('profile version', $attempt->getDisplay());
     }
 
     public function testDemoAssessmentsProduceMixedEvidenceCoverageStates(): void
