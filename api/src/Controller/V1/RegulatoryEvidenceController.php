@@ -155,6 +155,18 @@ final class RegulatoryEvidenceController extends AbstractController
             return $this->json(['error' => 'Context of Use does not belong to this project.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $existing = $this->em->getRepository(RequirementAssessment::class)->findOneBy([
+            'project' => $project,
+            'contextOfUse' => $cou,
+            'requirement' => $requirement,
+        ]);
+        if ($existing instanceof RequirementAssessment) {
+            return $this->json([
+                'error' => 'An assessment already exists for this project, Context of Use, and requirement.',
+                'assessment_id' => $existing->getId()->toRfc4122(),
+            ], Response::HTTP_CONFLICT);
+        }
+
         $assessment = (new RequirementAssessment())
             ->setProject($project)
             ->setContextOfUse($cou)
@@ -176,6 +188,7 @@ final class RegulatoryEvidenceController extends AbstractController
         }
 
         $links = [];
+        $seenLinks = [];
         foreach (($body['evidence_links'] ?? []) as $linkData) {
             if (!is_array($linkData)) {
                 return $this->json(['error' => 'Each evidence_links item must be an object.'], Response::HTTP_BAD_REQUEST);
@@ -185,10 +198,17 @@ final class RegulatoryEvidenceController extends AbstractController
                 return $this->json(['error' => 'Evidence item not found.'], Response::HTTP_BAD_REQUEST);
             }
 
+            $relationship = (string) ($linkData['relationship'] ?? RequirementEvidenceLink::REL_SUPPORTS);
+            $dedupeKey = $evidence->getId()->toRfc4122() . '|' . $relationship;
+            if (isset($seenLinks[$dedupeKey])) {
+                return $this->json(['error' => 'Duplicate evidence link in request.'], Response::HTTP_CONFLICT);
+            }
+            $seenLinks[$dedupeKey] = true;
+
             $link = (new RequirementEvidenceLink())
                 ->setAssessment($assessment)
                 ->setEvidenceItem($evidence)
-                ->setRelationship((string) ($linkData['relationship'] ?? RequirementEvidenceLink::REL_SUPPORTS))
+                ->setRelationship($relationship)
                 ->setProvenance(is_array($linkData['provenance'] ?? null) ? $linkData['provenance'] : []);
 
             $linkViolations = $this->validator->validate($link);
