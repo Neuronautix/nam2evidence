@@ -16,6 +16,7 @@ real study results.** They extend the existing `app:load-demo-data` project (COU
 | `validation_evidence.csv` | Validation Evidence Matrix rows |
 | `ontology_mapping_seed.json` | Suggested source-value → ontology-term mappings |
 | `expected_validation_report.json` | Expected before/after validation outcomes |
+| `fda_guidance_assessments.json` | Synthetic mapping of COU-HEP-001 to the versioned FDA March 2026 draft guidance profile |
 
 ## Deliberate issues in the "before" state
 These surface as navigable validation blockers in the Semantic Validation and Readiness
@@ -36,3 +37,18 @@ recording the `DONOR-02` passage, and approving the claims, the export gate open
 (`export_status: internally_reviewed`).
 
 See `../docs/POC_DEMO_SCRIPT.md` for the full step-by-step walkthrough.
+
+
+## FDA guidance-profile demonstration
+
+After loading the canonical demo project, the versioned FDA March 2026 draft
+guidance profile and its synthetic assessment fixture can be loaded with:
+
+```bash
+php bin/console app:load-guidance-profiles --with-demo-assessments
+```
+
+The fixture deliberately spans `supported`, `partial`, `missing`,
+`not_applicable`, and `requires_human_assessment`. These are illustrative
+nam2evidence statuses only. They are not FDA determinations, and every seeded
+assessment remains `human_review_required`.
