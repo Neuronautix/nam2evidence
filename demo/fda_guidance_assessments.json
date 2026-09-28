@@ -1,0 +1,190 @@
+{
+  "schema": "nam2evidence-demo-guidance-assessments/1.0",
+  "profile_key": "fda-nam-general-considerations-2026",
+  "profile_version": "1.0.0",
+  "cou_id": "COU-HEP-001",
+  "fixture_note": "Synthetic demonstration only. These statuses illustrate the evidence model and are not FDA assessments, regulatory advice, or validated conclusions.",
+  "assessments": [
+    {
+      "requirement_key": "FDA-NAM-COU-001",
+      "status": "supported",
+      "rationale": "Synthetic demo fixture: the CoU states a decision question, intended use, development stage, and decision supported.",
+      "evidence_links": []
+    },
+    {
+      "requirement_key": "FDA-NAM-BIO-001",
+      "status": "partial",
+      "rationale": "Synthetic demo fixture: hepatic cell identity and metabolic features are described, but several physiological limitations remain.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-005",
+          "relationship": "partially_supports"
+        },
+        {
+          "evidence_id": "EVID-006",
+          "relationship": "partially_supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-BIO-002",
+      "status": "partial",
+      "rationale": "Synthetic demo fixture: several liver-toxicity endpoints are characterized, while known transporter/metabolic limitations constrain coverage.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-005",
+          "relationship": "partially_supports"
+        },
+        {
+          "evidence_id": "EVID-006",
+          "relationship": "partially_supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-BIO-003",
+      "status": "requires_human_assessment",
+      "rationale": "Synthetic demo fixture: mechanistic-to-human clinical relevance requires expert interpretation beyond the structured evidence matrix.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-005",
+          "relationship": "contextualizes"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-001",
+      "status": "partial",
+      "rationale": "Synthetic demo fixture: assay/provenance metadata are available, but the fixture does not demonstrate every method-detail element in the FDA recommendation.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-011",
+          "relationship": "contextualizes"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-002",
+      "status": "supported",
+      "rationale": "Synthetic demo fixture: the analysis pipeline is version-controlled and the study records analysis criteria and software.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-012",
+          "relationship": "supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-003",
+      "status": "supported",
+      "rationale": "Synthetic demo fixture: the reference-compound panel reports sensitivity and specificity against pre-specified internal criteria.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-007",
+          "relationship": "supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-004",
+      "status": "missing",
+      "rationale": "Synthetic demo fixture: evidence of stable performance across the full assay working duration and resupplied batches is not represented.",
+      "evidence_links": []
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-005",
+      "status": "supported",
+      "rationale": "Synthetic demo fixture: NAMO-aligned model metadata include cell type, differentiation, source, passage, and species information.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-015",
+          "relationship": "supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-006",
+      "status": "partial",
+      "rationale": "Synthetic demo fixture: multiple donors and selected phenotype information are described, but systematic donor-variability characterization is incomplete.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-005",
+          "relationship": "contextualizes"
+        },
+        {
+          "evidence_id": "EVID-006",
+          "relationship": "contextualizes"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-007",
+      "status": "supported",
+      "rationale": "Synthetic demo fixture: positive/negative reference compounds and historical control performance are represented.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-007",
+          "relationship": "supports"
+        },
+        {
+          "evidence_id": "EVID-008",
+          "relationship": "supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-008",
+      "status": "partial",
+      "rationale": "Synthetic demo fixture: culture medium and some conditions are recorded, but the evidence matrix is not a complete maintenance-history record.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-015",
+          "relationship": "contextualizes"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-009",
+      "status": "not_applicable",
+      "rationale": "Synthetic demo fixture: the selected organoid model is not represented as an organ-chip/device platform requiring the device-specific checks in this curated requirement.",
+      "evidence_links": []
+    },
+    {
+      "requirement_key": "FDA-NAM-FIT-001",
+      "status": "requires_human_assessment",
+      "rationale": "Synthetic demo fixture: reference-compound performance is available, but availability and adequacy of a traditional comparator for this exact CoU require expert determination.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-007",
+          "relationship": "contextualizes"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-FIT-002",
+      "status": "supported",
+      "rationale": "Synthetic demo fixture: benefits/limitations and their interpretive implications are explicitly documented.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-013",
+          "relationship": "supports"
+        }
+      ]
+    },
+    {
+      "requirement_key": "FDA-NAM-FIT-003",
+      "status": "requires_human_assessment",
+      "rationale": "Synthetic demo fixture: integration of NAM findings into overall human safety risk remains a qualified scientific/regulatory judgment.",
+      "evidence_links": [
+        {
+          "evidence_id": "EVID-009",
+          "relationship": "contextualizes"
+        },
+        {
+          "evidence_id": "EVID-013",
+          "relationship": "contextualizes"
+        }
+      ]
+    }
+  ]
+}

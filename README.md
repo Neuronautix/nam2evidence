@@ -236,6 +236,8 @@ Open `docs/_build/html/index.html` after the build completes.
 | [docs/VALIDATION_RULES.md](docs/VALIDATION_RULES.md) | Structural, SHACL semantic, and QC/review-gate layers; report shape. |
 | [docs/EXPORTS.md](docs/EXPORTS.md) | Every export format, endpoint, intended consumer, and disclaimer. |
 | [docs/REGULATORY_POSITIONING.md](docs/REGULATORY_POSITIONING.md) | What the tool does and does not do; standardization ≠ validation. |
+| [docs/REGULATORY_EVIDENCE_MODEL.md](docs/REGULATORY_EVIDENCE_MODEL.md) | Versioned guidance profiles, requirement assessments, evidence links, and human-review semantics. |
+| [docs/FDA_NAM_2026_PROFILE.md](docs/FDA_NAM_2026_PROFILE.md) | Curation method and limitations for the FDA March 2026 draft NAM guidance profile. |
 | [docs/POC_DEMO_SCRIPT.md](docs/POC_DEMO_SCRIPT.md) | Step-by-step before/after demo narrative with expected outputs. |
 | [CHANGELOG.md](CHANGELOG.md) | Summary of the NAM-CORE layer: new entities, endpoints, screens, run/test steps, limitations. |
 | [docs/development/](docs/development/) | Engineering notes: design brief, phased implementation plan, and roadmap. |
@@ -360,11 +362,17 @@ docker compose exec -T api php bin/console doctrine:migrations:migrate --no-inte
 # Load the canonical demo project + ontology seed + NAM-CORE standardization layer
 docker compose exec -T api php bin/console app:load-demo-data --force
 docker compose exec -T api php bin/console app:load-ontology-seed
+docker compose exec -T api php bin/console app:load-guidance-profiles --with-demo-assessments
 docker compose exec -T api php bin/console app:load-namcore-demo          # endpoints, ontology mappings, provenance
-# add --corrected to load the resolved (all-blockers-cleared) state instead
+# add --corrected to load the resolved (all-blockers-cleared) NAM-CORE state instead
 ```
 
-> `app:load-namcore-demo` is what populates the six NAM-CORE workspaces
+> `app:load-guidance-profiles` loads immutable, versioned regulatory/reference
+> profiles from `standards/reference/`. The optional `--with-demo-assessments`
+> flag maps the synthetic COU-HEP-001 evidence to the FDA March 2026 draft profile;
+> those assessment statuses are demonstration data and remain human-review-required.
+>
+> `app:load-namcore-demo` populates the six NAM-CORE workspaces
 > (Endpoint Data, Ontology, Semantic Validation, Readiness, Provenance, Audit).
 > Run it after `app:load-demo-data`; run `app:load-ontology-seed` first so mappings
 > can auto-suggest against the seed vocabulary.
@@ -432,6 +440,7 @@ Reload demo data at any time:
 ```bash
 docker compose exec -T api php bin/console app:load-demo-data --force
 docker compose exec -T api php bin/console app:load-ontology-seed
+docker compose exec -T api php bin/console app:load-guidance-profiles --with-demo-assessments
 docker compose exec -T api php bin/console app:load-namcore-demo   # add --corrected for the resolved state
 ```
 
@@ -532,9 +541,9 @@ nam2evidence/
 │       ├── Entity/NamCore/    # NAM-CORE v0.1 entities
 │       ├── Service/NamCore/   # importer, validators, scorer, exporters
 │       ├── Controller/V1/     # /api/v1 endpoints
-│       └── Command/           # app:load-demo-data, app:load-ontology-seed, app:load-namcore-demo
+│       └── Command/           # demo, ontology, NAM-CORE, and guidance-profile loaders
 ├── services/validator/        # optional pyshacl + pyarrow sidecar (Flask)
-├── standards/                 # SHACL shapes, JSON-LD context, seed vocabulary
+├── standards/                 # SHACL, JSON-LD context, vocabularies, versioned reference profiles
 ├── demo/                      # raw + corrected demo CSVs (with deliberate gaps)
 ├── docs/                      # documentation (see above)
 │   ├── images/                # screenshots used in this README

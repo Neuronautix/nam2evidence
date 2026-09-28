@@ -1,0 +1,326 @@
+{
+  "schema": "nam2evidence-guidance-profile/1.0",
+  "profile": {
+    "profile_key": "fda-nam-general-considerations-2026",
+    "authority": "U.S. Food and Drug Administration (FDA), Center for Drug Evaluation and Research (CDER)",
+    "title": "General Considerations for the Use of New Approach Methodologies in Drug Development",
+    "canonical_source_url": "https://www.fda.gov/media/191589/download",
+    "publication_date": "2026-03-18",
+    "effective_date": null,
+    "status": "draft",
+    "version": "1.0.0",
+    "source_version": "March 2026 draft; FDA media 191589",
+    "jurisdiction": "United States",
+    "retrieved_at": "2026-09-28T00:00:00+00:00",
+    "source_metadata": {
+      "guidance_landing_page": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-considerations-use-new-approach-methodologies-drug-development",
+      "media_id": "191589",
+      "docket_number": "FDA-2025-D-6131",
+      "issuing_office": "Center for Drug Evaluation and Research (CDER)",
+      "guidance_level": "Draft Level 1",
+      "regulatory_status": "Draft — Not for Implementation; contains nonbinding recommendations",
+      "curation_date": "2026-09-28",
+      "curation_method": "Manual structured curation from the official FDA PDF. Requirements are paraphrases of Section III validation considerations, not verbatim regulatory text.",
+      "scope_note": "The FDA guidance describes broad validation considerations for NAMs used in drug development and is not specific to a particular NAM."
+    }
+  },
+  "requirements": [
+    {
+      "requirement_key": "FDA-NAM-COU-001",
+      "title": "Define the Context of Use and decision purpose",
+      "requirement_text": "Define the NAM's intended use and regulatory purpose in a specific drug-development decision context, including the question or data gap the NAM is intended to address.",
+      "evidence_domain": "context_of_use",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.A Context of Use; guidance p. 5; lines 136-147",
+      "interpretation_note": "Curated from a nonbinding recommendation. Whether the stated CoU is sufficiently specific and decision-relevant remains a human regulatory/scientific judgment.",
+      "curation": {
+        "source_basis": "Section III.A",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-BIO-001",
+      "title": "Describe physiologic and model-system relevance",
+      "requirement_text": "Describe the physiological features assessed by the NAM, including relevant cell types, species of origin, and how anatomical and physiological characteristics relevant to toxicity are represented by the platform.",
+      "evidence_domain": "human_biological_relevance",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.B Human Biological Relevance; guidance pp. 5-6; lines 151-177",
+      "interpretation_note": "The appropriate biological features depend on the NAM and CoU; the FDA text gives organ-specific examples rather than a universal feature list.",
+      "curation": {
+        "source_basis": "Section III.B first bullet and examples",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-BIO-002",
+      "title": "Show that relevant toxicological findings can be evaluated",
+      "requirement_text": "Provide evidence that toxicological findings relevant to the declared CoU can be evaluated reliably with the NAM and its selected endpoints.",
+      "evidence_domain": "human_biological_relevance",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.B Human Biological Relevance; guidance p. 6; lines 179-186",
+      "interpretation_note": "Endpoint adequacy is context-specific. Example biomarkers in the FDA text should not be treated as universally required endpoints.",
+      "curation": {
+        "source_basis": "Section III.B second bullet",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-BIO-003",
+      "title": "Connect modeled mechanisms to human outcomes",
+      "requirement_text": "Describe how biological mechanisms investigated by the NAM relate to outcomes relevant to human clinical testing or human toxicity assessment.",
+      "evidence_domain": "human_biological_relevance",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.B Human Biological Relevance; guidance p. 6; lines 188-194",
+      "interpretation_note": "Mechanistic-to-clinical relevance cannot be established by metadata completeness alone and should remain subject to qualified review.",
+      "curation": {
+        "source_basis": "Section III.B third bullet",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-001",
+      "title": "Document test-method details and variability sources",
+      "requirement_text": "Document test-method details relevant to reproducibility, including dosing, test-substance handling, detection/instrumentation, material compatibility, and steps that may introduce assay variability.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "all_nams"
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 204-207",
+      "interpretation_note": "The listed examples are representative; method-specific details should be selected for the actual NAM.",
+      "curation": {
+        "source_basis": "Section III.C first bullet",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-002",
+      "title": "Document statistical analysis and interpretation criteria",
+      "requirement_text": "Describe statistical methods and the criteria used to interpret NAM results, including how positive, negative, or inconclusive outcomes are determined when applicable.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "all_nams"
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 209-210",
+      "interpretation_note": "The relevant statistical methods and decision criteria depend on the NAM and endpoint.",
+      "curation": {
+        "source_basis": "Section III.C second bullet",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-003",
+      "title": "Characterize predictive performance for the specific CoU",
+      "requirement_text": "Characterize predictive performance for the declared Context of Use using appropriate performance measures such as sensitivity and specificity where they are meaningful.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 212-213",
+      "interpretation_note": "No universal performance threshold is inferred. Choice of metrics and adequacy are CoU-dependent.",
+      "curation": {
+        "source_basis": "Section III.C third bullet",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-004",
+      "title": "Establish assay working duration and stability",
+      "requirement_text": "Characterize the period over which the assay produces stable results and evaluate stability as assay materials are replaced or resupplied over time.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "conditional",
+        "when": {
+          "assay_has_material_or_batch_lifecycle": true
+        },
+        "otherwise": "not_applicable",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 215-218",
+      "interpretation_note": "Applicability depends on whether the NAM has a meaningful working-duration or material/batch lifecycle.",
+      "curation": {
+        "source_basis": "Section III.C fourth bullet",
+        "classification": "conditional recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-005",
+      "title": "Document cell or tissue source and preparation",
+      "requirement_text": "For cell- or tissue-based NAMs, document the cell type, isolation or differentiation methods, source information, relevant batch/catalog identifiers, and species.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "conditional",
+        "when": {
+          "method_family_in": [
+            "cell_based_in_vitro",
+            "tissue_based_in_vitro",
+            "organoid",
+            "organ_on_chip"
+          ]
+        },
+        "otherwise": "not_applicable"
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 220-222",
+      "interpretation_note": "This is not applicable to all computational or non-cellular NAMs.",
+      "curation": {
+        "source_basis": "Section III.C fifth bullet",
+        "classification": "method-conditional recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-006",
+      "title": "Characterize biological and donor variability",
+      "requirement_text": "Where biological or donor variability is relevant, describe factors such as genetics and donor phenotype in relation to the Context of Use.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "conditional",
+        "when": {
+          "biological_or_donor_variability_relevant": true
+        },
+        "otherwise": "not_applicable",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 224-225",
+      "interpretation_note": "Which variability factors matter is CoU-specific and should not be reduced to a fixed demographic checklist.",
+      "curation": {
+        "source_basis": "Section III.C sixth bullet",
+        "classification": "conditional recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-007",
+      "title": "Justify reference-compound or control selection",
+      "requirement_text": "Define and justify appropriate reference compounds or controls used to demonstrate scientific validity and performance of the NAM.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "context_dependent",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 227-228",
+      "interpretation_note": "The appropriate positive/negative controls and their number depend on the method, endpoint, and CoU.",
+      "curation": {
+        "source_basis": "Section III.C seventh bullet",
+        "classification": "context-dependent recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-008",
+      "title": "Document culture medium and maintenance conditions",
+      "requirement_text": "For culture-based NAMs, document the composition of the culture medium and relevant maintenance conditions such as passage, incubation, and surface-coating conditions.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "conditional",
+        "when": {
+          "culture_based_method": true
+        },
+        "otherwise": "not_applicable"
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance p. 7; lines 230-232",
+      "interpretation_note": "This requirement is specific to culture-based NAMs; equivalent technical controls may differ for other method families.",
+      "curation": {
+        "source_basis": "Section III.C eighth bullet",
+        "classification": "method-conditional recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-TECH-009",
+      "title": "Address platform- and device-specific technical effects",
+      "requirement_text": "For relevant platforms or devices, document technical and material characteristics that can affect biological relevance or variability and evaluate potential test-article/platform interactions or material-compatibility effects.",
+      "evidence_domain": "technical_characterization",
+      "applicability_rules": {
+        "mode": "conditional",
+        "when": {
+          "platform_or_device_specific_effects_relevant": true
+        },
+        "otherwise": "not_applicable",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.C Technical Characterization; guidance pp. 7-8; lines 234-249",
+      "interpretation_note": "FDA presents organ chips as an example. Applicability to a given NAM requires method-specific judgment.",
+      "curation": {
+        "source_basis": "Section III.C platform/device sub-bullets",
+        "classification": "platform-conditional recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-FIT-001",
+      "title": "Compare performance with established methods when available",
+      "requirement_text": "When a traditional comparator method exists, provide comparative performance data addressing whether the NAM characterizes the relevant risk at least as well as the established method.",
+      "evidence_domain": "fit_for_purpose",
+      "applicability_rules": {
+        "mode": "conditional",
+        "when": {
+          "traditional_comparator_available": true
+        },
+        "otherwise": "not_applicable",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.D Fit-for-Purpose; guidance p. 8; lines 256-259",
+      "interpretation_note": "This recommendation is explicitly conditional on availability of a traditional comparator. No universal superiority threshold is inferred.",
+      "curation": {
+        "source_basis": "Section III.D first bullet",
+        "classification": "conditional recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-FIT-002",
+      "title": "Describe benefits, limitations, and interpretive constraints",
+      "requirement_text": "Discuss the NAM's benefits and limitations, including study-design or conduct features that may affect reliability, reproducibility, or the ability to inform risk assessment for the intended CoU.",
+      "evidence_domain": "fit_for_purpose",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.D Fit-for-Purpose; guidance p. 8; lines 261-263",
+      "interpretation_note": "Limitations should remain visible even when other evidence requirements are well supported.",
+      "curation": {
+        "source_basis": "Section III.D second bullet",
+        "classification": "general recommendation"
+      }
+    },
+    {
+      "requirement_key": "FDA-NAM-FIT-003",
+      "title": "Explain contribution to overall human health or safety risk assessment",
+      "requirement_text": "Describe how findings from the NAM contribute to the overall determination of risks to human health or drug safety in the declared Context of Use and weight of evidence.",
+      "evidence_domain": "fit_for_purpose",
+      "applicability_rules": {
+        "mode": "all_nams",
+        "requires_human_interpretation": true
+      },
+      "importance": "recommended",
+      "source_locator": "Section III.D Fit-for-Purpose; guidance p. 8; lines 265-266; see also background lines 34-40",
+      "interpretation_note": "This is an integrative scientific/regulatory interpretation and must not be auto-resolved from structural completeness alone.",
+      "curation": {
+        "source_basis": "Section III.D third bullet plus weight-of-evidence context",
+        "classification": "general recommendation"
+      }
+    }
+  ]
+}

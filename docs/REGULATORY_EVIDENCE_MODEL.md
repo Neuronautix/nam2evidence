@@ -42,7 +42,7 @@ A machine-origin assessment therefore cannot be confused with a human-reviewed c
 
 GuidanceProfile uses a stable profile key plus an explicit profile version. The pair is unique. A changed curation or interpretation must create a new version instead of rewriting the reference data used by existing assessments.
 
-Guidance profiles and requirements are read-only through the v1 HTTP API. Issue #6 will add a curated FDA profile through a controlled loader/seed workflow.
+Guidance profiles and requirements are read-only through the v1 HTTP API. The first curated profile is the FDA March 2026 draft NAM guidance; it is loaded through the controlled `app:load-guidance-profiles` seed workflow. See [FDA_NAM_2026_PROFILE.md](./FDA_NAM_2026_PROFILE.md).
 
 Every requirement retains:
 
@@ -51,7 +51,7 @@ Every requirement retains:
 - a source locator (section/page/paragraph/table as appropriate);
 - an optional interpretation note for conditional or ambiguous material.
 
-Profiles can retain a content hash and retrieval metadata so later snapshots can state exactly which external artifact was consulted.
+Profiles can retain a content hash and retrieval metadata so later snapshots can state exactly which external artifact was consulted. The controlled seed loader also records a SHA-256 fingerprint of the machine-readable curation. Re-running an unchanged version is idempotent; changing the seed without changing its profile version is rejected.
 
 ## Project and CoU isolation
 
