@@ -7,10 +7,12 @@ This repository currently uses API Platform resources plus custom controllers.
 - v1 field names are frozen at the API boundary.
 - New fields can be added as backward-compatible optional fields.
 - Renames or removals require a new versioned endpoint namespace.
+- Versioned regulatory reference data is read-only over HTTP. Curated source changes create a new GuidanceProfile version rather than rewriting a profile already used by assessments.
+- Requirement-assessment status describes evidence coverage for one project + Context of Use + guidance-profile version; it must not be interpreted as regulatory acceptance, scientific validation, or submission readiness.
 
 ## Read/write serialization groups
 
-All core entities now expose explicit serializer groups:
+All core API Platform entities expose explicit serializer groups:
 
 - read: response payload fields
 - write: accepted request payload fields
@@ -25,6 +27,13 @@ Entities covered:
 - ClaimEdge
 - ECTDMapping
 - ExportPackage (read only)
+
+The regulatory-evidence model introduced for v0.2 uses explicit custom-controller serialization instead of generic API Platform writes:
+
+- GuidanceProfile — read-only reference data
+- GuidanceRequirement — read-only reference data
+- RequirementAssessment — project-scoped GET/POST/PATCH
+- RequirementEvidenceLink — created as part of an assessment and returned read-only
 
 ## Verification steps
 
@@ -43,6 +52,8 @@ When Symfony console tooling is available in the runtime image, export and diff 
 
 ## Current custom endpoints to keep stable
 
+Existing workspace/export endpoints:
+
 - POST /api/projects/{id}/export
 - POST /api/projects/{id}/export/download
 - GET /api/projects/{id}/export/history
@@ -52,3 +63,17 @@ When Symfony console tooling is available in the runtime image, export and diff 
 - PUT /api/v1/projects/{id}/cou/{couId}
 - PUT /api/v1/projects/{id}/evidence/{evidenceId}
 - PUT /api/v1/projects/{id}/claims/{claimId}/status
+
+Regulatory-evidence reference endpoints:
+
+- GET /api/v1/guidance-profiles
+- GET /api/v1/guidance-profiles/{id}
+- GET /api/v1/guidance-profiles/{id}/requirements
+
+Project-scoped regulatory-evidence assessment endpoints:
+
+- GET /api/v1/projects/{id}/requirement-assessments
+- POST /api/v1/projects/{id}/requirement-assessments
+- PATCH /api/v1/projects/{id}/requirement-assessments/{assessmentId}
+
+The assessment list accepts optional `context_of_use_id` and `profile_id` filters.
