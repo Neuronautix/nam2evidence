@@ -82,6 +82,15 @@ final class RegulatoryEvidenceApiTest extends WebTestCase
         self::assertSame('human_review_required', $created['review_status']);
         self::assertCount(1, $created['evidence_links']);
 
+        // The project + CoU + requirement tuple is idempotent at the API boundary:
+        // duplicate creation is an explicit conflict rather than a database 500.
+        $this->client->jsonRequest('POST', "/api/v1/projects/$projectId/requirement-assessments", [
+            'context_of_use_id' => $cou->getId()->toRfc4122(),
+            'requirement_id' => $requirement->getId()->toRfc4122(),
+        ]);
+        self::assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
+        self::assertSame($created['id'], $this->json()['assessment_id']);
+
         $assessmentId = $created['id'];
         $this->client->request(
             'PATCH',
