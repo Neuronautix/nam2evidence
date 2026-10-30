@@ -1,6 +1,6 @@
 # Integration plan — nam2evidence × TIB Knowledge Loom × SciClaim2Explore
 
-Status: **proposal, pre-implementation (Gate 0 not yet run)**
+Status: **Lane A core delivered as a fixture-driven POC (see `docs/EXTERNAL_STATEMENTS.md`); Gate 0 against the live Loom still open; Lane C (SciClaim2Explore) parked by decision of 2026-10-30**
 Last updated: 2026-10-30
 Owner: nam2evidence maintainers
 Related: [roadmap.md](roadmap.md), [REGULATORY_EVIDENCE_MODEL.md](../REGULATORY_EVIDENCE_MODEL.md),

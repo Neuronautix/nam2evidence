@@ -39,6 +39,7 @@
     "RawDataFile": "prov:Entity",
     "AnalysisScript": "prov:Entity",
     "OntologyMapping": "nam:OntologyMapping",
+    "ExternalStatement": "nam:ExternalStatement",
 
     "project": "nam:project",
     "contextOfUse": "nam:contextOfUse",
@@ -66,6 +67,8 @@
     "measurements": { "@id": "nam:hasMeasurement", "@type": "@id", "@container": "@set" },
     "claims": { "@id": "nam:hasClaim", "@type": "@id", "@container": "@set" },
     "supportedBy": { "@id": "nam:supportedBy", "@type": "@id", "@container": "@set" },
-    "reviewStatus": "nam:reviewStatus"
+    "reviewStatus": "nam:reviewStatus",
+    "license": { "@id": "dcterms:license" },
+    "nam:target": { "@type": "@id" }
   }
 }

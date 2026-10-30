@@ -18,6 +18,7 @@ tabs from top to bottom:
 5. inspect provenance;
 6. review context of use and NAM study metadata;
 7. review validation evidence and claims;
+   and decide on external statements captured from sources such as the TIB Knowledge Loom;
 8. map evidence to eCTD Module 4 where relevant;
 9. inspect audit trail;
 10. export only after review gates are cleared.
@@ -40,6 +41,7 @@ export as review-supportive material that needs qualified human sign-off.
    import-namo
    validation-matrix
    claim-graph
+   external-statements
    ectd-mapping
    endpoints
    ontology

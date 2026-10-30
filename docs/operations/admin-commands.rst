@@ -43,6 +43,15 @@ For corrected NAM-CORE demo data:
 
    docker compose exec -T api php bin/console app:load-namcore-demo --corrected
 
+For the synthetic Knowledge Loom external statements (links are only suggested;
+add ``--reviewed`` to apply the recorded demo reviewer decisions):
+
+.. code-block:: powershell
+
+   docker compose exec -T api php bin/console app:load-guidance-profiles --with-demo-assessments
+   docker compose exec -T api php bin/console app:load-loom-demo
+   docker compose exec -T api php bin/console app:load-loom-demo --reviewed
+
 Stop containers
 ---------------
 

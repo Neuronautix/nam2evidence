@@ -219,3 +219,37 @@ curl -s http://localhost:8080/api/v1/projects/$PID/audit-log | jq '.count, .entr
 - [VALIDATION_RULES.md](./VALIDATION_RULES.md)
 - [EXPORTS.md](./EXPORTS.md)
 - [REGULATORY_POSITIONING.md](./REGULATORY_POSITIONING.md)
+
+---
+
+## 9. External statements from the Knowledge Loom (synthetic)
+
+Show that published, DOI-identified findings can sit next to the project *without* becoming
+evidence by themselves:
+
+```bash
+docker compose exec -T api php bin/console app:load-guidance-profiles --with-demo-assessments
+docker compose exec -T api php bin/console app:load-loom-demo
+```
+
+Open **External Statements**. **Expected:** 5 synthetic statements captured
+(`captured_unverified`), 7 suggested links waiting for a decision, one statement flagged
+`restricted` / *not exported*. Semantic Validation shows 7 non-blocking warnings; the export gate
+is unchanged.
+
+Walk through one decision live: enter a reviewer identity, confirm the capture of statement
+`…hep-organoid-dili-2026.s1`, approve its `supports` link to `FDA-NAM-TECH-003`, then reject the
+kidney-organoid suggestion on `CLAIM-004` as *not comparable*. Each action lands in the Audit tab.
+
+Or apply all recorded decisions at once:
+
+```bash
+docker compose exec -T api php bin/console app:load-loom-demo --reviewed
+```
+
+**Expected:** 4 captures verified, 6 links approved, 1 rejected as `not_comparable`. The JSON-LD
+export now contains four `nam:ExternalStatement` nodes with their approved links; the restricted
+statement is absent. `CLAIM-004` still needs the project's own evidence and human review — an
+external statement never closes that gap.
+
+`[SCREENSHOT PLACEHOLDER: External Statements tab — statement card with study context, data links and a suggested link awaiting decision]`

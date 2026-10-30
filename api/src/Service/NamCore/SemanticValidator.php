@@ -41,6 +41,7 @@ final class SemanticValidator
         $this->checkClaims($data, $issues);
         $this->checkProvenance($data, $issues);
         $this->checkOntology($data, $issues);
+        $this->checkExternalStatements($data, $issues);
 
         $errors = array_values(array_filter($issues, static fn($i) => $i['severity'] === 'error'));
         $warnings = array_values(array_filter($issues, static fn($i) => $i['severity'] === 'warning'));
@@ -83,6 +84,7 @@ final class SemanticValidator
             str_starts_with($entity, 'BiologicalSystem'), str_starts_with($entity, 'Exposure') => 'nam_study',
             str_starts_with($entity, 'EndpointMeasurement') => 'endpoints',
             str_starts_with($entity, 'Claim') => 'claims',
+            str_starts_with($entity, 'ExternalStatement') => 'external-evidence',
             str_starts_with($entity, 'ProvenanceActivity') => 'provenance',
             str_starts_with($entity, 'OntologyMapping') => 'ontology',
             default => 'overview',
@@ -247,6 +249,34 @@ final class SemanticValidator
                 $this->add($issues, 'error', 'OntologyMappingShape', 'OntologyMapping:' . $map->getSourceValue(), 'mapping_status',
                     sprintf('Mandatory ontology mapping "%s" is not approved (status: %s).', $map->getSourceValue(), $map->getMappingStatus()),
                     'Review and approve the ontology mapping, or reject and remap.', true);
+            }
+        }
+    }
+
+    /**
+     * External statements never block or unblock anything by themselves: a
+     * pending suggestion is surfaced as a warning so a reviewer decides, and an
+     * approved supporting link on a non-eligible statement is reported as an
+     * error (the API prevents it; this is the second opinion).
+     *
+     * @param array<string,mixed> $data
+     * @param list<array<string,mixed>> $issues
+     */
+    private function checkExternalStatements(array $data, array &$issues): void
+    {
+        /** @var \App\Entity\NamCore\ExternalStatementLink $link */
+        foreach ($data['externalLinks'] ?? [] as $link) {
+            $stmt = $link->getExternalStatement();
+            $ref = 'ExternalStatement:' . $stmt->getStatementUri();
+            if ($link->getReviewStatus() === \App\Entity\NamCore\ExternalStatementLink::REVIEW_SUGGESTED) {
+                $this->add($issues, 'warning', 'ExternalStatementLinkShape', $ref, 'review_status',
+                    sprintf('Suggested link (%s) to %s is waiting for a human decision.', $link->getRelationship(), $link->getTargetType()),
+                    'Approve, reject or mark the link not comparable; suggestions never count as evidence.', false);
+            }
+            if ($link->isApproved() && $link->isSupportive() && !$stmt->isEligibleForSupport()) {
+                $this->add($issues, 'error', 'ExternalStatementLinkShape', $ref, 'relationship',
+                    'An approved supporting link points to a statement that is not public or whose capture was not verified.',
+                    'Verify the capture and confirm the licence, or downgrade the link to contextualizes.', true);
             }
         }
     }
