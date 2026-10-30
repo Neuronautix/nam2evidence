@@ -1,0 +1,144 @@
+{
+  "schema": "external-statement-capture/0.1.0",
+  "fixture_note": "SYNTHETIC demonstration only. These statements imitate the shape of TIB Knowledge Loom records (one record per work, DOI-identified statements with declared data/code links). The DOIs use the 10.5555 example prefix and resolve nowhere. Nothing here is a real finding, a validated method, or regulatory evidence.",
+  "source_system": "loom",
+  "captured_by": "demo-seed",
+  "capture_status": "captured_unverified",
+  "record": {
+    "record_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026",
+    "original_work_doi": "10.5555/synthetic.hep-organoid-dili-2026",
+    "source_version": "2026-10-01",
+    "licence": "CC-BY-4.0",
+    "access_scope": "public",
+    "authors": ["Synthetic Author A", "Synthetic Author B"]
+  },
+  "statements": [
+    {
+      "statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s1",
+      "kind": "curated_statement",
+      "text": "[SYNTHETIC] Across a 30-compound reference panel in iPSC-derived human liver organoids, ATP viability at day 7 identified 17 of 20 DILI-positive compounds (sensitivity 85%) and misclassified 2 of 10 DILI-negative compounds (specificity 80%) at exposures up to 10x human Cmax.",
+      "dataset_links": [
+        {"uri": "https://doi.org/10.5555/synthetic.dataset.hep-panel-30", "label": "Reference panel viability table (synthetic)", "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000001", "licence": "CC-BY-4.0"}
+      ],
+      "code_links": [
+        {"uri": "https://example.org/synthetic/hep-panel-analysis", "label": "Classification notebook (synthetic)"}
+      ],
+      "study_context": {
+        "model": "iPSC-derived human liver organoid, 3 donors",
+        "exposure": "7-day continuous, up to 10x human Cmax",
+        "comparator": "Curated DILI-positive (n=20) / DILI-negative (n=10) reference set",
+        "outcome": "ATP viability",
+        "measurement_unit": "% of vehicle control",
+        "time_window": "day 7",
+        "design": "Reference-compound classification, 3 biological replicates"
+      },
+      "uncertainty": {"sensitivity_95ci": "64-95%", "specificity_95ci": "49-94%", "note": "Small negative set; CI wide"}
+    },
+    {
+      "statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s2",
+      "kind": "curated_statement",
+      "text": "[SYNTHETIC] Across six iPSC donor lines, CYP3A4 activity in liver organoids spanned a 4.2-fold range and BSEP transcript abundance ranged from 18% to 41% of primary human hepatocytes.",
+      "dataset_links": [
+        {"uri": "https://doi.org/10.5555/synthetic.dataset.donor-variability-6", "label": "Donor characterization table (synthetic)", "licence": "CC-BY-4.0"}
+      ],
+      "code_links": [],
+      "study_context": {
+        "model": "iPSC-derived human liver organoid, 6 donor lines",
+        "exposure": "none (baseline characterization)",
+        "comparator": "Primary human hepatocytes (pooled, n=10 donors)",
+        "outcome": "CYP3A4 activity; BSEP transcript",
+        "measurement_unit": "fold range; % of primary hepatocyte",
+        "time_window": "day 21 of differentiation",
+        "design": "Cross-sectional donor characterization"
+      },
+      "uncertainty": {"note": "Transcript, not functional transport; donor sex balanced 3/3"}
+    },
+    {
+      "statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s3",
+      "kind": "author_claim",
+      "text": "[SYNTHETIC] For the same 20 DILI-positive reference compounds, historical 28-day rat repeat-dose toxicity studies had reported hepatic findings for 11 compounds (55%).",
+      "dataset_links": [
+        {"uri": "https://doi.org/10.5555/synthetic.dataset.rat-historical-20", "label": "Historical rat findings crosswalk (synthetic)", "licence": "CC-BY-4.0"}
+      ],
+      "code_links": [],
+      "study_context": {
+        "model": "Rat, 28-day repeat dose (historical literature)",
+        "exposure": "Not harmonized across sources",
+        "comparator": "Same DILI-positive reference set as statement s1",
+        "outcome": "Any hepatic histopathology or clinical chemistry finding",
+        "measurement_unit": "count / proportion",
+        "time_window": "28 days",
+        "design": "Retrospective literature crosswalk"
+      },
+      "uncertainty": {"note": "Heterogeneous dose selection and reporting across historical studies; author interpretation"}
+    },
+    {
+      "statement_uri": "https://doi.org/10.5555/loom.synthetic.kidney-organoid-2026.s1",
+      "record_uri": "https://doi.org/10.5555/loom.synthetic.kidney-organoid-2026",
+      "original_work_doi": "10.5555/synthetic.kidney-organoid-2026",
+      "kind": "curated_statement",
+      "text": "[SYNTHETIC] Kidney organoids exposed to cisplatin (10 uM) released KIM-1 at 6.3x the vehicle level at 48 hours.",
+      "dataset_links": [
+        {"uri": "https://doi.org/10.5555/synthetic.dataset.kidney-kim1", "label": "KIM-1 release table (synthetic)", "licence": "CC-BY-4.0"}
+      ],
+      "code_links": [],
+      "study_context": {
+        "model": "iPSC-derived kidney organoid",
+        "exposure": "cisplatin 10 uM, 48 h",
+        "comparator": "vehicle",
+        "outcome": "KIM-1 release",
+        "measurement_unit": "fold of vehicle",
+        "time_window": "48 h",
+        "design": "Single-compound nephrotoxicity pilot"
+      },
+      "uncertainty": {"note": "n=2 organoid batches"}
+    },
+    {
+      "statement_uri": "https://consortium.example.org/prerelease/hep-sandwich-2026/s7",
+      "record_uri": "https://consortium.example.org/prerelease/hep-sandwich-2026",
+      "kind": "analytical_finding",
+      "text": "[SYNTHETIC, RESTRICTED] Pre-release consortium analysis: in 2D sandwich-cultured primary hepatocytes, BSEP function measured by taurocholate efflux was 2.1x higher than in the organoid format at matched culture day.",
+      "licence": "Consortium pre-release - no redistribution",
+      "access_scope": "restricted",
+      "dataset_links": [],
+      "code_links": [],
+      "study_context": {
+        "model": "Primary human hepatocyte sandwich culture vs liver organoid",
+        "exposure": "none",
+        "comparator": "organoid format, matched culture day",
+        "outcome": "taurocholate efflux (BSEP function)",
+        "measurement_unit": "fold",
+        "time_window": "day 7",
+        "design": "Format comparison"
+      },
+      "uncertainty": {"note": "Pre-release; not peer reviewed"}
+    }
+  ],
+  "suggested_links": [
+    {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s1", "target_type": "requirement_assessment", "target": "FDA-NAM-TECH-003", "relationship": "supports", "rule": "shared evidence domain: predictive performance in the declared CoU"},
+    {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s1", "target_type": "evidence_item", "target": "EVID-007", "relationship": "contextualizes", "rule": "same evidence domain: reference_compound_performance"},
+    {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s2", "target_type": "requirement_assessment", "target": "FDA-NAM-TECH-006", "relationship": "partially_supports", "rule": "shared evidence domain: donor/biological variability"},
+    {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s2", "target_type": "claim", "target": "CLAIM-003", "relationship": "contextualizes", "rule": "claim limitation mentions BSEP; statement reports BSEP range"},
+    {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s3", "target_type": "requirement_assessment", "target": "FDA-NAM-FIT-001", "relationship": "contextualizes", "rule": "comparison with an established (animal) method"},
+    {"statement_uri": "https://doi.org/10.5555/loom.synthetic.kidney-organoid-2026.s1", "target_type": "claim", "target": "CLAIM-004", "relationship": "contextualizes", "rule": "naive keyword match: 'organoid' (deliberately weak suggestion)"},
+    {"statement_uri": "https://consortium.example.org/prerelease/hep-sandwich-2026/s7", "target_type": "evidence_item", "target": "EVID-005", "relationship": "contextualizes", "rule": "same transporter (BSEP) as the evidence row"}
+  ],
+  "reviewed_decisions": {
+    "reviewer": "demo-reviewer",
+    "verify_captures": [
+      "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s1",
+      "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s2",
+      "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s3",
+      "https://doi.org/10.5555/loom.synthetic.kidney-organoid-2026.s1"
+    ],
+    "decisions": [
+      {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s1", "target": "FDA-NAM-TECH-003", "decision": "approved", "note": "Independent public panel with matching CoU (hepatotoxicity hazard identification, <=10x Cmax). Supports, does not replace, the project's own EVID-007.", "comparability_note": "Same model class, same exposure ceiling, overlapping reference set; different donors."},
+      {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s1", "target": "EVID-007", "decision": "approved", "note": "Context for the internal concordance figure."},
+      {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s2", "target": "FDA-NAM-TECH-006", "decision": "approved", "note": "Adds six external donors to the variability picture; transcript-level only, hence partial."},
+      {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s2", "target": "CLAIM-003", "decision": "approved", "note": "Public range (18-41%) brackets our 30% BSEP figure; limitation stands."},
+      {"statement_uri": "https://doi.org/10.5555/loom.synthetic.hep-organoid-dili-2026.s3", "target": "FDA-NAM-FIT-001", "decision": "approved", "note": "Historical comparator context; author claim, heterogeneous sources. Not a head-to-head comparison for this CoU."},
+      {"statement_uri": "https://doi.org/10.5555/loom.synthetic.kidney-organoid-2026.s1", "target": "CLAIM-004", "decision": "rejected", "relationship": "not_comparable", "note": "Different organ, endpoint class and Context of Use. Keyword overlap ('organoid') is not comparability.", "comparability_note": "Kidney vs liver; KIM-1 vs hepatocellular injury; nephrotoxicity CoU."},
+      {"statement_uri": "https://consortium.example.org/prerelease/hep-sandwich-2026/s7", "target": "EVID-005", "decision": "approved", "note": "Useful context for the BSEP limitation; restricted, so it stays inside the project and out of every export."}
+    ]
+  }
+}

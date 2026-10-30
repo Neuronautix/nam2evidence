@@ -10,6 +10,8 @@ use App\Entity\EvidenceItem;
 use App\Entity\NamCore\Assay;
 use App\Entity\NamCore\BiologicalSystem;
 use App\Entity\NamCore\EndpointMeasurement;
+use App\Entity\NamCore\ExternalStatement;
+use App\Entity\NamCore\ExternalStatementLink;
 use App\Entity\NamCore\Exposure;
 use App\Entity\NamCore\OntologyMapping;
 use App\Entity\NamCore\ProvenanceActivity;
@@ -59,6 +61,11 @@ final class ProjectGraphBuilder
         $rawFiles = $this->em->getRepository(RawDataFile::class)->findBy(['project' => $project]);
         $activities = $this->em->getRepository(ProvenanceActivity::class)->findBy(['project' => $project]);
         $mappings = $this->em->getRepository(OntologyMapping::class)->findBy(['project' => $project]);
+        $externalStatements = $this->em->getRepository(ExternalStatement::class)->findBy(['project' => $project]);
+        $externalLinks = $externalStatements === [] ? [] : $this->em->createQueryBuilder()
+            ->select('l')->from(ExternalStatementLink::class, 'l')->join('l.externalStatement', 's')
+            ->where('IDENTITY(s.project) = :pid')->setParameter('pid', $project->getId()->toRfc4122())
+            ->getQuery()->getResult();
 
         $evidence = [];
         foreach ($studies as $study) {
@@ -81,6 +88,8 @@ final class ProjectGraphBuilder
             'rawFiles'         => $rawFiles,
             'activities'       => $activities,
             'ontologyMappings' => $mappings,
+            'externalStatements' => $externalStatements,
+            'externalLinks'    => $externalLinks,
         ];
     }
 
@@ -244,6 +253,46 @@ final class ProjectGraphBuilder
             }
             if (count($support) > 0) { $node['supportedBy'] = $support; }
             $graph[] = array_filter($node, static fn($v) => $v !== null && $v !== '' && $v !== []);
+        }
+
+        // External statements (e.g. TIB Knowledge Loom): only public captures are
+        // exported, and only reviewer-approved links are expressed as edges.
+        // Restricted/unknown-scope statements never leave the project.
+        $approvedLinksByStatement = [];
+        /** @var ExternalStatementLink $link */
+        foreach ($data['externalLinks'] as $link) {
+            if (!$link->isApproved() || !$link->getExternalStatement()->isExportable()) continue;
+            $targetIri = match ($link->getTargetType()) {
+                ExternalStatementLink::TARGET_CLAIM => $base . 'claim/' . $link->getClaim()?->getClaimId(),
+                ExternalStatementLink::TARGET_EVIDENCE_ITEM => $base . 'evidence/' . $link->getEvidenceItem()?->getEvidenceId(),
+                default => $base . 'requirement-assessment/' . $link->getRequirementAssessment()?->getId()->toRfc4122(),
+            };
+            $approvedLinksByStatement[$link->getExternalStatement()->getId()->toRfc4122()][] = array_filter([
+                'nam:target'       => $targetIri,
+                'nam:relationship' => $link->getRelationship(),
+                'nam:reviewedBy'   => $link->getReviewedBy(),
+                'nam:comparabilityNote' => $link->getComparabilityNote(),
+            ], static fn($v) => $v !== null && $v !== '');
+        }
+        /** @var ExternalStatement $stmt */
+        foreach ($data['externalStatements'] as $stmt) {
+            if (!$stmt->isExportable()) continue;
+            $graph[] = array_filter([
+                '@id'            => $base . 'external-statement/' . $stmt->getId()->toRfc4122(),
+                '@type'          => 'ExternalStatement',
+                'label'          => $stmt->getStatementUri(),
+                'description'    => $stmt->getStatementText(),
+                'wasDerivedFrom' => $stmt->getStatementUri(),
+                'nam:sourceSystem'   => $stmt->getSourceSystem(),
+                'nam:recordUri'      => $stmt->getRecordUri(),
+                'nam:originalWorkDoi'=> $stmt->getOriginalWorkDoi(),
+                'nam:sourceVersion'  => $stmt->getSourceVersion(),
+                'nam:statementKind'  => $stmt->getStatementKind(),
+                'license'            => $stmt->getLicence(),
+                'nam:captureStatus'  => $stmt->getCaptureStatus(),
+                'nam:payloadSha256'  => $stmt->getPayloadSha256(),
+                'nam:externalLinks'  => $approvedLinksByStatement[$stmt->getId()->toRfc4122()] ?? [],
+            ], static fn($v) => $v !== null && $v !== '' && $v !== []);
         }
 
         /** @var OntologyMapping $map */

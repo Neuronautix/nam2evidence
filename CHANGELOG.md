@@ -1,5 +1,22 @@
 # Changelog — NAM-CORE standardization layer
 
+## Unreleased — external statements (TIB Knowledge Loom) foundation
+
+- New entities `ExternalStatement` and `ExternalStatementLink` (`namcore_external_statement*`,
+  migration `Version20261030000001`): immutable, hashed captures of DOI-identified statements
+  from external sources, linked to requirement assessments, claims or evidence rows only by a
+  named reviewer's decision. `not_comparable` is a first-class outcome.
+- New `/api/v1/projects/{id}/external-statements*` and `external-statement-links*` endpoints
+  (idempotent capture, fail-closed conflicts, verify/approve/reject with mandatory reviewer).
+- Public statements and approved links appear in the JSON-LD graph as `nam:ExternalStatement`;
+  restricted or unknown-scope statements never export. Pending suggestions are semantic-validation
+  warnings, never blockers. No readiness dimension or gate rule was added.
+- New **External Statements** workspace tab and `app:load-loom-demo [--reviewed]` with the
+  synthetic fixture `demo/loom_statements.json`.
+- Docs: `docs/EXTERNAL_STATEMENTS.md`, user-guide page, demo-script step, and the planning
+  document `docs/development/integration-plan-loom-sciclaim2explore.md`.
+
+
 This release refactors nam2evidence from a regulatory evidence-packaging
 prototype into a modular, FAIR-by-design, ontology-linked, validator-driven NAM
 standardization toolkit. **It is additive**: the five existing workspaces, the demo, the

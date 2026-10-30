@@ -19,6 +19,7 @@ import {
   Gauge,
   History,
   Workflow,
+  BookOpen,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -39,6 +40,7 @@ const navItems = [
   { href: '/import', label: 'Import NAMO', icon: Upload },
   { href: '/validation', label: 'Validation Matrix', icon: CheckSquare },
   { href: '/claims', label: 'Claim Graph', icon: GitBranch },
+  { href: '/external-evidence', label: 'External Statements', icon: BookOpen },
   { href: '/ectd', label: 'eCTD Mapping', icon: FolderTree },
   { href: '/audit', label: 'Audit', icon: History },
   { href: '/export', label: 'Export Center', icon: Download },

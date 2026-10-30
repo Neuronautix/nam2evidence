@@ -365,12 +365,18 @@ docker compose exec -T api php bin/console app:load-ontology-seed
 docker compose exec -T api php bin/console app:load-guidance-profiles --with-demo-assessments
 docker compose exec -T api php bin/console app:load-namcore-demo          # endpoints, ontology mappings, provenance
 # add --corrected to load the resolved (all-blockers-cleared) NAM-CORE state instead
+docker compose exec -T api php bin/console app:load-loom-demo             # synthetic Knowledge Loom statements, links suggested for review
+# add --reviewed to apply the recorded demo reviewer decisions
 ```
 
 > `app:load-guidance-profiles` loads immutable, versioned regulatory/reference
 > profiles from `standards/reference/`. The optional `--with-demo-assessments`
 > flag maps the synthetic COU-HEP-001 evidence to the FDA March 2026 draft profile;
 > those assessment statuses are demonstration data and remain human-review-required.
+>
+> `app:load-loom-demo` captures **synthetic** TIB Knowledge Loom-shaped statements into the
+> demo project and suggests links to guidance requirements, claims and evidence rows. Nothing
+> is approved until a named reviewer decides; see `docs/EXTERNAL_STATEMENTS.md`.
 >
 > `app:load-namcore-demo` populates the six NAM-CORE workspaces
 > (Endpoint Data, Ontology, Semantic Validation, Readiness, Provenance, Audit).
@@ -442,6 +448,7 @@ docker compose exec -T api php bin/console app:load-demo-data --force
 docker compose exec -T api php bin/console app:load-ontology-seed
 docker compose exec -T api php bin/console app:load-guidance-profiles --with-demo-assessments
 docker compose exec -T api php bin/console app:load-namcore-demo   # add --corrected for the resolved state
+docker compose exec -T api php bin/console app:load-loom-demo      # add --reviewed for the decided state
 ```
 
 ---

@@ -77,3 +77,16 @@ Project-scoped regulatory-evidence assessment endpoints:
 - PATCH /api/v1/projects/{id}/requirement-assessments/{assessmentId}
 
 The assessment list accepts optional `context_of_use_id` and `profile_id` filters.
+
+External-statement endpoints (v0.3 foundation; see docs/EXTERNAL_STATEMENTS.md):
+
+- POST /api/v1/projects/{id}/external-statements/import
+- GET /api/v1/projects/{id}/external-statements
+- PATCH /api/v1/projects/{id}/external-statements/{sid}/verify
+- GET /api/v1/projects/{id}/external-statement-targets
+- GET /api/v1/projects/{id}/external-statement-links
+- POST /api/v1/projects/{id}/external-statement-links
+- PATCH /api/v1/projects/{id}/external-statement-links/{lid}/approve
+- PATCH /api/v1/projects/{id}/external-statement-links/{lid}/reject
+
+External statements are captured source material. A link's review status describes a human decision about relevance to one project record; it is not validation evidence and must not be read as scientific or regulatory acceptance.

@@ -13,3 +13,4 @@ released changes, see the [changelog](../../CHANGELOG.md).
 | [design-brief.md](design-brief.md)               | Original planning brief: problem statement, product thesis, MVP scope, core artifacts, epics. |
 | [implementation-plan.md](implementation-plan.md) | Phased delivery plan with completion state per task, from repository audit onward.            |
 | [roadmap.md](roadmap.md)                         | NAM-CORE standardization layer: remaining phases, schema targets, and sequencing.             |
+| [integration-plan-loom-sciclaim2explore.md](integration-plan-loom-sciclaim2explore.md) | Proposal for integrating TIB Knowledge Loom statements and SciClaim2Explore-style data exploration: lanes, entities, gates, tests, open decisions. |
